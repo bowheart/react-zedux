@@ -1,0 +1,91 @@
+{
+  "name": "react-zedux",
+  "version": "0.1.0",
+  "description": "Official React bindings for Zedux",
+  "main": "dist/react-zedux.js",
+  "module": "dist/react-zedux.es.js",
+  "typings": "./index.d.ts",
+  "files": [
+    "dist",
+    "src",
+    "index.d.ts"
+  ],
+  "scripts": {
+    "build": "npm run build:umd && npm run build:umd:min && npm run build:es",
+    "build:umd": "cross-env NODE_ENV=development rollup -c",
+    "build:umd:min": "cross-env NODE_ENV=production rollup -c -o dist/react-zedux.min.js",
+    "build:es": "rollup -c -f es -o dist/react-zedux.es.js",
+    "dev": "npm run build:umd -- -w & npm run build:umd:min -- -w & npm run build:es -- -w",
+    "lint": "eslint src test",
+    "prepublishOnly": "npm run build",
+    "test": "jest"
+  },
+  "keywords": [
+    "immer",
+    "immutable",
+    "management",
+    "proxy",
+    "reducer",
+    "redux",
+    "simple",
+    "state",
+    "zedux"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bowheart/react-zedux.git"
+  },
+  "bugs": {
+    "url": "https://github.com/bowheart/react-zedux/issues"
+  },
+  "homepage": "https://github.com/bowheart/react-zedux#readme",
+  "jest": {
+    "collectCoverage": true,
+    "collectCoverageFrom": [
+      "**/src/**"
+    ],
+    "globals": {
+      "process.env.NODE_ENV": "development"
+    },
+    "roots": [
+      "<rootDir>/test"
+    ],
+    "setupFiles": [
+      "./test/setup.js"
+    ]
+  },
+  "author": "Joshua Claunch",
+  "license": "MIT",
+  "dependencies": {
+    "@types/react": "^16.0.34",
+    "prop-types": "^15.6.0"
+  },
+  "peerDependencies": {
+    "react": "^16.0.0 || ^15.3.0",
+    "zedux": "~0.0 || ~0.1"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.0",
+    "babel-eslint": "^8.2.1",
+    "babel-jest": "^21.2.0",
+    "babel-preset-es2015-rollup": "^3.0.0",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "cross-env": "^5.1.1",
+    "enzyme": "^3.3.0",
+    "enzyme-adapter-react-16": "^1.1.1",
+    "eslint": "^4.13.1",
+    "eslint-plugin-react": "^7.5.1",
+    "jest": "^21.2.1",
+    "raf": "^3.4.0",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
+    "rollup": "^0.50.0",
+    "rollup-plugin-babel": "^3.0.2",
+    "rollup-plugin-replace": "^2.0.0",
+    "rollup-plugin-uglify": "^2.0.1",
+    "rollup-watch": "^4.3.1",
+    "zedux": "0.0.14"
+  }
+}
