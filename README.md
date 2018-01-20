@@ -107,7 +107,7 @@ Not all stores have to be part of the global store hierarchy. Components can cre
 
 ### Identifying stores
 
-A component deep in the hierarchy may have many stores provided to it. How do we pick and choose which parent-provided store to use? The answer is simple: Each store needs a unique identifier.
+A component deep in the hierarchy may have many stores provided to it. How do we pick and choose which parent-provided store to use? The answer won't surprise you. Because...it isn't surprising. Each store needs a unique identifier.
 
 The `<Provider />` component takes a required `id` prop. This id may be anything, but will typically be a custom Provider component. More on those in the next section.
 
@@ -117,7 +117,7 @@ In our first example, we used a string (`'root'`) as the Provider's `id` prop. T
 
 In React Zedux, a store specifies how it's consumed. In practice, we'll rarely use `<Provider />` components on the fly. Typically we'll wrap them in a custom Provider component that adds additional functionality for consumers. Custom Providers also serve as an easy identifier for the stores they provide.
 
-Custom Providers are the "component" in component-bound stores. They'll create a store in their `constructor` (or as a class field, if you're cool enough for that):
+Custom Providers are the "component" in component-bound stores; they create a store in their `constructor` (or as a class field, if you're cool enough for that):
 
 ```javascript
 import React, { Component } from 'react'
@@ -129,7 +129,7 @@ import { Provider, createStore } from 'react-zedux'
   <Provider /> component. He also creates a component-bound store
   whose life is tied to his own lifecycle.
 
-  Note that we set the `id` prop to TodosProvider
+  Note that we set the `id` prop to TodosProvider itself
 */
 class TodosProvider extends Component {
   store = createStore()
@@ -309,7 +309,7 @@ function Counter() {
 const CounterDisplay = withStores({
   counterStore: CounterProvider
 })(
-  ({ counterStore: { state } }) => `counter value: ${state}`
+  ({ counterStore: { state } }) => `Counter value: ${state}`
 )
 
 const CounterControls = withStores({
@@ -337,7 +337,7 @@ render(
 
 We use `<Provider />` to provide a store to a component's descendants.
 
-We use `withStores()` to access a store provided by a parent.
+We use `withStores()` to access stores provided by parents.
 
 Every provided store needs a unique identifier, which will usually be a custom Provider component.
 
@@ -345,7 +345,7 @@ Custom Providers are used to define a store's interface &ndash; how child compon
 
 We can create global or component-bound stores. Attaching component-bound stores to the global store hierarchy is easy, but not always necessary.
 
-There's really not much to it. Go rock the state management world!
+And that's really it. There's not much to it. Go rock the state management world!
 
 ### Notes
 
@@ -402,9 +402,11 @@ An HOC. Pulls any number of stores off the list of provided stores and passes th
 
 Params:
 
-- **mapStoresToProps** - non-empty object (required) - A map of propName-to-storeId pairs.
+- **mapStoresToProps** - non-empty object (required) - A map of `propName` to `storeId` pairs.
 
-Returns a component enhancer used to wrap a component in the given store(s).
+Returns a component enhancer used to wrap a component in the given store(s). The wrapped component will receive `extendedStore` objects as the requested props.
+
+An `extendedStore` object contains one property &ndash; `state` &ndash; whose value is guaranteed to always be the current state of the store. The `extendedStore` object's prototype will be the store itself.
 
 ```javascript
 import React from 'react'
