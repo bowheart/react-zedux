@@ -521,4 +521,4 @@ Bugs can be submitted to https://github.com/bowheart/react-zedux/issues
 
 ## License
 
-The MIT License.
+The [MIT License](https://github.com/bowheart/react-zedux/blob/master/LICENSE.md).
