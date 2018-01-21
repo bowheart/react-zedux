@@ -1,5 +1,7 @@
 import babel from 'rollup-plugin-babel'
+import commonjs from 'rollup-plugin-commonjs'
 import replace from 'rollup-plugin-replace'
+import resolve from 'rollup-plugin-node-resolve'
 import uglify from 'rollup-plugin-uglify'
 
 
@@ -7,6 +9,8 @@ const env = process.env.NODE_ENV
 
 
 const plugins = [
+  resolve(),
+
   babel({
     babelrc: false,
     exclude: 'node_modules/**',
@@ -19,7 +23,9 @@ const plugins = [
 
   replace({
     'process.env.NODE_ENV': JSON.stringify(env) // quote the value
-  })
+  }),
+
+  commonjs()
 ]
 
 
@@ -43,9 +49,8 @@ const config = {
   },
   name: 'ReactZedux',
   plugins,
-  external: [ 'prop-types', 'react', 'zedux' ],
+  external: [ 'react', 'zedux' ],
   globals: {
-    'prop-types': 'PropTypes',
     react: 'React',
     zedux: 'Zedux'
   }
