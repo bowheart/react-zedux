@@ -13,7 +13,7 @@ const plugins = [
 
   babel({
     babelrc: false,
-    exclude: 'node_modules/**',
+    exclude: '**node_modules/**',
     presets: [
       'es2015-rollup',
       'react',
@@ -42,18 +42,18 @@ if (env === 'production') {
 
 
 const config = {
+  external: [ 'react', 'zedux' ],
   input: 'src/index.js',
   output: {
     file: 'dist/react-zedux.js',
-    format: 'umd'
+    format: 'umd',
+    globals: {
+      react: 'React',
+      zedux: 'Zedux'
+    },
+    name: 'ReactZedux'
   },
-  name: 'ReactZedux',
-  plugins,
-  external: [ 'react', 'zedux' ],
-  globals: {
-    react: 'React',
-    zedux: 'Zedux'
-  }
+  plugins
 }
 
 
