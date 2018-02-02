@@ -21,7 +21,7 @@ Or yarn:
 yarn add react-zedux
 ```
 
-Or include the appropriate unpkg build on your page:
+Or include the appropriate unpkg build on your page (module exposed as `ReactZedux`):
 
 ### Development
 
@@ -261,9 +261,12 @@ A component specifies how it consumes the store &ndash; `connect()` | A store sp
 A single root store is provided to all components | Many stores are provided at different points in the component hierarchy
 Global store(s) | Global and component-bound stores
 Various "state" and "dispatch" props are injected into the wrapped component | A single prop per store is injected into the wrapped component
+Bloated presentational components | Bloated container components
 `mapStateToProps` and `mapDispatchToProps` | `mapStoresToProps`
 
 Since Zedux stores are composable, each store will typically be much smaller than a Redux store. This makes it much more practical for individual components to interface with the store itself.
+
+Also worth noting, both React Redux and React Zedux bloat your code somewhere. React Redux bloats presentational component files a little more. React Zedux chooses to offload that bloat to the more sparse and data-capable container components.
 
 ### A full example
 
@@ -341,7 +344,7 @@ We use `withStores()` to access stores provided by parents.
 
 Every provided store needs a unique identifier, which will usually be a custom Provider component.
 
-Custom Providers are used to define a store's interface &ndash; how child components can interact with the store. They don't actually have to expose the store itself! The `<Provider />` component's `store` prop can be any observable!
+Custom Providers are used to define a store's api &ndash; how child components can interact with the store. This is nice for binding action creators, selectors, and hooks to the store.
 
 We can create global or component-bound stores. Attaching component-bound stores to the global store hierarchy is easy, but not always necessary.
 

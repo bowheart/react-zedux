@@ -21,10 +21,8 @@
     "test": "jest"
   },
   "keywords": [
-    "immer",
-    "immutable",
-    "management",
-    "proxy",
+    "abstraction",
+    "react",
     "reducer",
     "redux",
     "simple",
@@ -61,7 +59,7 @@
     "prop-types": "^15.6.0"
   },
   "peerDependencies": {
-    "react": "^16.0.0 || ^15.3.0",
+    "react": "^15.3.0 || ^16.0.0",
     "zedux": "~0.0 || ~0.1"
   },
   "devDependencies": {

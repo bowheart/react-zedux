@@ -29,19 +29,22 @@ import { storesContextName } from '../utils/constants'
 */
 export class Provider extends Component {
   static childContextTypes = {
-    [storesContextName]: PropTypes.object.isRequired
+    [storesContextName]: PropTypes.instanceOf(Map).isRequired
   }
 
 
   static contextTypes = {
-    [storesContextName]: PropTypes.object
+    [storesContextName]: PropTypes.instanceOf(Map)
   }
 
 
   static propTypes = {
     children: PropTypes.node,
     id: PropTypes.any.isRequired,
-    store: PropTypes.object.isRequired
+    store: PropTypes.shape({
+      getState: PropTypes.func.isRequired,
+      subscribe: PropTypes.func.isRequired
+    }).isRequired
   }
 
 

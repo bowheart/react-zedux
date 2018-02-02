@@ -5,6 +5,9 @@ import { storesContextName } from '../utils/constants'
 import { assertIsComponent, getDisplayName } from '../utils/general'
 
 
+const errorHeader = 'React Zedux Error - withStores() - '
+
+
 /**
   Accesses a store provided by a parent component.
 
@@ -26,7 +29,7 @@ export const withStores = propsToStoreIdsMap => WrappedComponent => {
 
   return class extends Component {
     static contextTypes = {
-      [storesContextName]: PropTypes.object.isRequired
+      [storesContextName]: PropTypes.instanceOf(Map).isRequired
     }
 
 
@@ -36,7 +39,7 @@ export const withStores = propsToStoreIdsMap => WrappedComponent => {
     constructor(props, context) {
       super(props, context)
 
-      this.state = getStoresFromContext(propsToStoreIdsMap, context)
+      this.state = pullStoresFromContext(propsToStoreIdsMap, context)
     }
 
 
@@ -81,8 +84,20 @@ function assertHasEntries(map) {
   if (typeof map === 'object' && Object.entries(map).length) return true
 
   throw new Error(
-    'ReactZedux Error - withStores() - '
+    errorHeader
     + 'propsToStoreIdsMap must be an object with at least one entry.'
+  )
+}
+
+
+function assertStoreExists(store, storePropName) {
+  if (store) return true
+
+  throw new ReferenceError(
+    errorHeader
+    + `Store not found for prop "${storePropName}". `
+    + 'The given store id does not match the id of any provided stores.'
+    + 'Did you forget the <Provider /> for this store?'
   )
 }
 
@@ -97,7 +112,7 @@ function createStoreInterface(store, state) {
 }
 
 
-function getStoresFromContext(propsToStoreIdsMap, context) {
+function pullStoresFromContext(propsToStoreIdsMap, context) {
   const providedStores = context[storesContextName]
 
   // Fail silently (for now) since React already logs an error
@@ -108,6 +123,8 @@ function getStoresFromContext(propsToStoreIdsMap, context) {
 
   Object.entries(propsToStoreIdsMap).forEach(([ storePropName, storeId ]) => {
     const store = providedStores.get(storeId)
+
+    assertStoreExists(store, storePropName)
 
     stores[storePropName] = createStoreInterface(store)
   })

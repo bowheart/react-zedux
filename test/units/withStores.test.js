@@ -80,6 +80,35 @@ describe('withStores()', () => {
   })
 
 
+  test('throws an error if the given store id does not match any provided stores', () => {
+
+    /* eslint-disable no-console */
+
+    const spy = jest.fn()
+    const oldConsoleError = console.error
+    console.error = spy
+
+    const WrappedComponent = jest.fn(() => 'a')
+    const Component = withStores({ a: 1 })(WrappedComponent)
+
+    const store = {}
+    const context = { [storesContextName]: new Map().set(2, store) }
+
+    expect(mount.bind(
+      null,
+      <Component />,
+      { context }
+    )).toThrowError(ReferenceError)
+
+    expect(spy).toHaveBeenCalled()
+
+    console.error = oldConsoleError
+
+    /* eslint-enable no-console */
+
+  })
+
+
   test('pulls a store off the provided context', () => {
 
     const WrappedComponent = jest.fn(() => 'a')
