@@ -1,6 +1,6 @@
 import { Component, ComponentClass, ComponentType, ReactNode } from 'react'
 
-import { Observable } from 'zedux'
+import { Observable, Store } from 'zedux'
 
 export * from 'zedux'
 
@@ -21,6 +21,13 @@ type Omit<
   T,
   Diff<keyof T, K>
 >
+
+
+export interface StoreApiConfiguration<Actors, Hooks, Selectors> {
+  actors?: Actors
+  hooks?: Hooks
+  selectors?: Selectors
+}
 
 
 export interface StoreComponentEnhancer<
@@ -47,8 +54,8 @@ export interface ProviderComponentEnhancer<P> {
 
 
 export interface ProviderProps {
-  children: ReactNode
-  id?: any
+  children?: ReactNode
+  id: any
   store: Observable<any>
 }
 
@@ -78,6 +85,46 @@ export interface ProviderProps {
     }
 */
 export class Provider extends Component<ProviderProps, {}> {}
+
+
+/**
+  Creates an api for a Zedux store
+
+  The returned object extends the store - the store is set
+  as the api's prototype.
+
+  Accepts a storeApiConfiguration object with three optional properties:
+    - actors - a map of actors that will be "bound" to the store.
+    - hooks - a map of curried hooks. Often used to wrap actors and
+        selectors with extra checks/functionality. These have the form:
+
+          const myHook = storeApi => () => {}
+
+    - selectors -  a map of selectors that will be "bound" to the store.
+
+  These are all objects whose properties will be merged together to
+  form the store's api.
+
+  Throws an error if there are any property overlaps between the
+  actors, hooks, selectors, and the store's own properties.
+
+  @template StoreType The specific type of the given Zedux store
+  @template Actors The type of the actors map
+  @template Hooks The type of the hooks map
+  @template Selectors The type of the selectors map
+
+  @returns {Actors & Hooks & Selectors & StoreType} An object that extends
+    the store and contains all properties of all passed maps.
+*/
+export function createStoreApi<
+  StoreType extends Store = Store,
+  Actors extends Object = {},
+  Hooks extends Object = {},
+  Selectors extends Object = {}
+>(
+  store: StoreType,
+  storeApiConfiguration: StoreApiConfiguration<Actors, Hooks, Selectors>
+): Actors & Hooks & Selectors & StoreType
 
 
 /**
