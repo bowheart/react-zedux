@@ -1,4 +1,5 @@
-import { getDisplayName } from '../../src/utils/general'
+import { getDisplayName, isPlainObject } from '../../src/utils/general'
+import { nonPlainObjects, plainObjects } from '../utils'
 
 
 describe('getDisplayName()', () => {
@@ -25,6 +26,28 @@ describe('getDisplayName()', () => {
   test('returns "Unknown" if the component has no displayName and is anonymous (has no name)', () => {
 
     expect(getDisplayName(() => 'a')).toBe('Unknown')
+
+  })
+
+})
+
+
+describe('isPlainObject()', () => {
+
+  test('returns true if the given variable is a plain object', () => {
+
+    plainObjects.forEach(
+      plainObject => expect(isPlainObject(plainObject)).toBe(true)
+    )
+
+  })
+
+
+  test('returns false if the given variable is not a plain object', () => {
+
+    nonPlainObjects.forEach(
+      nonPlainObject => expect(isPlainObject(nonPlainObject)).toBe(false)
+    )
 
   })
 

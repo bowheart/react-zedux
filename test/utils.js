@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types'
+import vm from 'vm'
 
 import { storesContextName } from '../src/utils/constants'
 
@@ -15,3 +16,22 @@ export const contextifyComponent = Component => {
 
   return Component
 }
+
+
+export const nonPlainObjects = [
+  undefined,
+  null,
+  'a',
+  1,
+  [],
+  () => {},
+  new Map(),
+  Object.create(null)
+]
+
+
+export const plainObjects = [
+  {},
+  Object.create(Object.prototype),
+  vm.runInNewContext('placeholder = {}')
+]

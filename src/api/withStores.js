@@ -96,7 +96,7 @@ function assertStoreExists(store, storePropName) {
   throw new ReferenceError(
     errorHeader
     + `Store not found for prop "${storePropName}". `
-    + 'The given store id does not match the id of any provided stores.'
+    + 'The given store id does not match the id of any provided stores. '
     + 'Did you forget the <Provider /> for this store?'
   )
 }

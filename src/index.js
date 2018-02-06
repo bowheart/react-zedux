@@ -1,3 +1,4 @@
+export * from './api/createStoreApi'
 export * from './api/Provider'
 export * from './api/withProvider'
 export * from './api/withStores'
