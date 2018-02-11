@@ -473,7 +473,9 @@ These provide/consume enhancers can actually be used as a decent replacement for
 
 ```javascript
 import React, { Component } from 'react'
-import { Provider, createStore, withProvider, withStores } from 'react-zedux'
+import {
+  Provider, compose, createStore, withProvider, withStores
+} from 'react-zedux'
 
 class FormProvider extends Component {
   store = createStore()
@@ -499,11 +501,11 @@ class FormProvider extends Component {
   }
 }
 
-function FormUi({ formStore }) {
+function FormUi({ formStore: { setField, state } }) {
   return (
     <form>
-      <input name="firstName" value={firstName} onChange={setField} />
-      <input name="lastName" value={lastName} onChange={setField} />
+      <input name="firstName" value={state.firstName} onChange={setField} />
+      <input name="lastName" value={state.lastName} onChange={setField} />
     </form>
   )
 }

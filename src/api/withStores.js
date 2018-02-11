@@ -2,7 +2,9 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
 import { storesContextName } from '../utils/constants'
-import { assertIsComponent, getDisplayName } from '../utils/general'
+import {
+  assertIsComponent, getDisplayName, isPlainObject
+} from '../utils/general'
 
 
 const errorHeader = 'React Zedux Error - withStores() - '
@@ -22,9 +24,12 @@ const errorHeader = 'React Zedux Error - withStores() - '
 
     withStores({ storePropName: theId })(Child)
 */
-export const withStores = propsToStoreIdsMap => WrappedComponent => {
+export const withStores = (
+  propsToStoreIdsMap, mapStoresToProps
+) => WrappedComponent => {
   assertHasEntries(propsToStoreIdsMap)
   assertIsComponent(WrappedComponent, 'withStores', 'WrappedComponent')
+  assertIsFunction(mapStoresToProps)
 
 
   return class extends Component {
@@ -67,12 +72,17 @@ export const withStores = propsToStoreIdsMap => WrappedComponent => {
 
 
     render() {
-      const passThroughProps = this.props
+      const { state, props } = this
+      const injectedProps = mapStoresToProps
+        ? mapStoresToProps(state, props)
+        : state
+
+      assertIsObject(injectedProps)
 
       return (
         <WrappedComponent
-          {...this.state}
-          {...passThroughProps}
+          {...injectedProps}
+          {...props}
         />
       )
     }
@@ -86,6 +96,41 @@ function assertHasEntries(map) {
   throw new Error(
     errorHeader
     + 'propsToStoreIdsMap must be an object with at least one entry.'
+  )
+}
+
+
+function assertIsFunction(mapStoresToProps) {
+  if (!mapStoresToProps || typeof mapStoresToProps === 'function') return true
+
+  throw new TypeError(
+    errorHeader
+    + 'If passed, mapStoresToProps must be a function that returns '
+    + 'a plain object. Received: ' + typeof mapStoresToProps
+  )
+}
+
+
+function assertIsObject(thing) {
+  if (isPlainObject(thing)) return true
+
+  throw new TypeError(
+    errorHeader
+    + 'Expected mapStoresToProps to return a plain object.'
+  )
+}
+
+
+function assertStoresAreProvided(providedStores, propsToStoreIdsMap) {
+  if (providedStores instanceof Map) return true
+
+  const firstStorePropName = Object.keys(propsToStoreIdsMap)[0]
+
+  throw new ReferenceError(
+    errorHeader
+    + 'No stores have been provided! '
+    + `Cannot access store for prop "${firstStorePropName}". `
+    + 'Did you forget to wrap this component in a <Provider />?'
   )
 }
 
@@ -115,9 +160,7 @@ function createStoreInterface(store, state) {
 function pullStoresFromContext(propsToStoreIdsMap, context) {
   const providedStores = context[storesContextName]
 
-  // Fail silently (for now) since React already logs an error
-  // about the missing contextType
-  if (!(providedStores instanceof Map)) return
+  assertStoresAreProvided(providedStores, propsToStoreIdsMap)
 
   const stores = {}
 

@@ -58,7 +58,7 @@ describe('withStores()', () => {
   })
 
 
-  test('logs an error if no parent provides the special stores context property', () => {
+  test('throws/logs an error if no parent provides the special stores context property', () => {
 
     /* eslint-disable no-console */
 
@@ -69,7 +69,9 @@ describe('withStores()', () => {
     const WrappedComponent = () => 'a'
     const Component = withStores({ a: 1 })(WrappedComponent)
 
-    render(<Component />)
+    expect(
+      render.bind(null, <Component />)
+    ).toThrowError(ReferenceError)
 
     expect(spy).toHaveBeenCalled()
 
@@ -99,6 +101,49 @@ describe('withStores()', () => {
       <Component />,
       { context }
     )).toThrowError(ReferenceError)
+
+    expect(spy).toHaveBeenCalled()
+
+    console.error = oldConsoleError
+
+    /* eslint-enable no-console */
+
+  })
+
+
+  test('throws an error if mapStoresToProps is not a function', () => {
+
+    const WrappedComponent = jest.fn(() => 'a')
+
+    expect(
+      withStores({ a: 1 }, {}).bind(null, WrappedComponent)
+    ).toThrowError(TypeError)
+
+  })
+
+
+  test('throws an error if mapStoresToProps does not return a plain object', () => {
+
+    /* eslint-disable no-console */
+
+    const spy = jest.fn()
+    const oldConsoleError = console.error
+    console.error = spy
+
+    const mapStoresToProps = ({ a }) => ([ a ])
+    const WrappedComponent = jest.fn(() => 'a')
+    const Component = withStores({ a: 1 }, mapStoresToProps)(WrappedComponent)
+
+    const store = createStore()
+      .hydrate(2)
+
+    const context = { [storesContextName]: new Map().set(1, store) }
+
+    expect(mount.bind(
+      null,
+      <Component />,
+      { context }
+    )).toThrowError(TypeError)
 
     expect(spy).toHaveBeenCalled()
 
@@ -191,6 +236,38 @@ describe('withStores()', () => {
         },
         b: 3,
         c: 4
+      },
+      {}
+    )
+
+  })
+
+
+  test('passes only the projected store props if mapStoresToProps is passed', () => {
+
+    const mapStoresToProps = ({ a: { state: { b } } }) => ({ b })
+    const WrappedComponent = jest.fn(() => 'a')
+    const Component = withStores({ a: 1 }, mapStoresToProps)(WrappedComponent)
+
+    const store = createStore()
+      .hydrate({
+        b: 2
+      })
+
+    const context = { [storesContextName]: new Map().set(1, store) }
+
+    const wrapper = mount(
+      <Component c={3} d={4} />,
+      { context }
+    )
+
+    wrapper.unmount()
+
+    expect(WrappedComponent).toHaveBeenCalledWith(
+      {
+        b: 2,
+        c: 3,
+        d: 4
       },
       {}
     )
