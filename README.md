@@ -41,7 +41,7 @@ To learn by example, check out the [examples in the Zedux repo](https://github.c
 
 To learn by getting dirty, fiddle with [this codepen](https://codepen.io/bowheart/pen/MrKMmw?editors=0010).
 
-To learn from us, check out the [documentation](https://bowheart.github.io/react-zedux/docs/gettingStarted/overview).
+To learn from us, check out the [documentation](https://bowheart.github.io/react-zedux/gettingStarted/overview).
 
 To learn comprehensively, check out the [tests](https://github.com/bowheart/react-zedux/tree/master/test).
 
@@ -144,11 +144,11 @@ const App = Context.inject('store')(
 )
 ```
 
-See the [inject HOC documentation](https://bowheart.github.io/react-zedux/docs/types/context/inject) for more info on this guy. Also see the [consume HOC](https://bowheart.github.io/react-zedux/docs/types/context/inject) for all possible overloads of `Context.inject()`.
+See the [inject HOC documentation](https://bowheart.github.io/react-zedux/types/context/inject) for more info on this guy. Also see the [consume HOC](https://bowheart.github.io/react-zedux/types/context/inject) for all possible overloads of `Context.inject()`.
 
 ### The Context object
 
-The [Context object](https://bowheart.github.io/react-zedux/docs/types/Context) returned by `createContext()` contains 3 React (First-Order) components:
+The [Context object](https://bowheart.github.io/react-zedux/types/Context) returned by `createContext()` contains 3 React (First-Order) components:
 
 ```js
 import { createContext } from 'react-zedux'
@@ -173,7 +173,7 @@ Context.inject()
 
 You can get by with just `<Context.Provider>` and `<Context.Consumer>`. The rest is just sugar, but it definitely comes in handy.
 
-See the [Context docs](https://bowheart.github.io/react-zedux/docs/types/context/inject).
+See the [Context docs](https://bowheart.github.io/react-zedux/types/context/inject).
 
 ### Render props!
 
@@ -225,17 +225,17 @@ You can see why React Zedux offers some sugar.
 
 ### Summary
 
-We use [`createContext()`](https://bowheart.github.io/react-zedux/docs/api/createContext) to create a Context from an observable or StoreApi.
+We use [`createContext()`](https://bowheart.github.io/react-zedux/api/createContext) to create a Context from an observable or StoreApi.
 
-We use [`<Context.Provider>`](https://bowheart.github.io/react-zedux/docs/types/context/Provider) to provide the observable to descendants.
+We use [`<Context.Provider>`](https://bowheart.github.io/react-zedux/types/context/Provider) to provide the observable to descendants.
 
-We use [`<Context.Consumer>`](https://bowheart.github.io/react-zedux/docs/types/context/Consumer) to consume a provided observable.
+We use [`<Context.Consumer>`](https://bowheart.github.io/react-zedux/types/context/Consumer) to consume a provided observable.
 
-We use [`<Context.Injector>`](https://bowheart.github.io/react-zedux/docs/types/context/Injector) to simultaneously provide and consume the store.
+We use [`<Context.Injector>`](https://bowheart.github.io/react-zedux/types/context/Injector) to simultaneously provide and consume the store.
 
-[`Context.provide`](https://bowheart.github.io/react-zedux/docs/types/context/provide), [`Context.consume()`](https://bowheart.github.io/react-zedux/docs/types/context/consume), and [`Context.inject()`](https://bowheart.github.io/react-zedux/docs/types/context/inject) are alternatives to their First-Order counterparts, with a few added features.
+[`Context.provide`](https://bowheart.github.io/react-zedux/types/context/provide), [`Context.consume()`](https://bowheart.github.io/react-zedux/types/context/consume), and [`Context.inject()`](https://bowheart.github.io/react-zedux/types/context/inject) are alternatives to their First-Order counterparts, with a few added features.
 
-We didn't get to [component-bound stores](https://bowheart.github.io/react-zedux/docs/api/StoreApi), [time travel](https://bowheart.github.io/react-zedux/docs/guides/timeTravel), or general [usage with observables](https://bowheart.github.io/react-zedux/docs/guides/usingObservables), but check all that out in the [full documentation](https://bowheart.github.io/react-zedux/docs/gettingStarted/gettingStarted/overview)!
+We didn't get to [component-bound stores](https://bowheart.github.io/react-zedux/api/StoreApi), [time travel](https://bowheart.github.io/react-zedux/guides/timeTravel), or general [usage with observables](https://bowheart.github.io/react-zedux/guides/usingObservables), but check all that out in the [full documentation](https://bowheart.github.io/react-zedux/gettingStarted/gettingStarted/overview)!
 
 ### Notes
 

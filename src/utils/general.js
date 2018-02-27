@@ -74,26 +74,32 @@ export function isStoreApi(Thing) {
 }
 
 
+export function mapProps(mapper, store) {
+  const props = mapper(store)
+
+  assertIsPlainObject(props, 'mapStoreToProps')
+
+  return props
+}
+
+
+export function pluckProps(propsToPluck, store) {
+  const props = {}
+
+  for (let key of propsToPluck) props[key] = store[key]
+
+  return props
+}
+
+
 export function resolveProps(mapper, store, method) {
   if (!mapper) return store
 
   if (typeof mapper === 'string') return { [mapper]: store }
 
-  if (Array.isArray(mapper)) {
-    const props = {}
+  if (Array.isArray(mapper)) return pluckProps(mapper, store)
 
-    for (let key of mapper) props[key] = store[key]
-
-    return props
-  }
-
-  if (typeof mapper === 'function') {
-    const props = mapper(store)
-
-    assertIsPlainObject(props, 'mapStoreToProps')
-
-    return props
-  }
+  if (typeof mapper === 'function') return mapProps(mapper, store)
 
   throw new TypeError(
     `React Zedux Error - Context.${method}() - `
