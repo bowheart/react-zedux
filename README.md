@@ -41,482 +41,207 @@ To learn by example, check out the [examples in the Zedux repo](https://github.c
 
 To learn by getting dirty, fiddle with [this codepen](https://codepen.io/bowheart/pen/MrKMmw?editors=0010).
 
+To learn from us, check out the [documentation](https://bowheart.github.io/react-zedux/docs/gettingStarted/overview).
+
 To learn comprehensively, check out the [tests](https://github.com/bowheart/react-zedux/tree/master/test).
 
-To learn from us, keep reading; the documentation follows:
+Or keep reading for a brief run-down:
 
 ## Quick start
 
-A Zedux app has many stores composed together in a store hierarchy. A React app has many components composed together in a component hierarchy. A React Zedux app ties the two hierarchies together at various points. These "tie-in" points are called Providers. A Provider is just a special component that "provides" a Zedux store to its descendants:
+A Zedux app has many stores composed together in a store hierarchy. A React app has many components composed together in a component hierarchy. A React Zedux app ties the two hierarchies together at various points. These "tie-in" points are called Providers.
 
-```javascript
+A Provider is just a special component that "provides" an observable (e.g. a Zedux store) to its descendants.
+
+Any descendant that accesses the provided observable is called a Consumer.
+
+And that's really it! At a high level, you now know just about everything about React Zedux.
+
+> React Zedux uses the [new context api](https://github.com/facebook/react/issues/12152) of React 16.3. As such, it is (currently) incompatible with earlier versions of React. The React Zedux api is heavily based off the new context api. So if you're familiar with it, you'll feel right at home!
+
+### A basic example
+
+```js
 import React from 'react'
-import { render } from 'react-dom'
-import App from './App'
-
-/*
-  React Zedux re-exports all the Zedux built-ins.
-  This gives our normal component files one less dependency.
-  Here, createStore is from Zedux, Provider is from React Zedux.
-*/
-import { Provider, createStore } from 'react-zedux'
-
-/*
-  A Zedux app will typically have a single root store.
-  Here we're using a global store.
-  This store will never die.
-*/
-const rootStore = createStore()
-
-// The rootStore will typically wrap the whole application.
-render(
-  <Provider id="root" store={rootStore}>
-    <App />
-  </Provider>,
-  document.getElementById('root')
-)
-```
-
-### Store categories
-
-In a React Zedux app, there are two types of stores:
-
-1. Global store &ndash; lives as long as the application does unless lazy-loaded (#codesplitting) or explicitly destroyed.
-
-2. Component-bound store &ndash; born when its component is mounted and dies when its component is unmounted.
-
-```javascript
-import React, { Component } from 'react'
+import { createContext } from 'react-zedux'
 import { createStore } from 'zedux'
 
-// I am a global store.
-const globalStore = createStore()
-
-class MyComponent extends Component {
-
-  // I am a component-bound store.
-  store = createStore().hydrate('woot!')
-
-  render() {
-    return this.store.getState()
-  }
-}
-```
-
-Not all stores have to be part of the global store hierarchy. Components can create completely isolated stores if they want. But for awesome debugging experiences, it can be useful to attach component-bound stores to the global store hierarchy. More on that in the below [section on time travel](#time-travel).
-
-### Identifying stores
-
-A component deep in the hierarchy may have many stores provided to it. How do we pick and choose which parent-provided store to use? The answer won't surprise you. Because...it isn't surprising. Each store needs a unique identifier.
-
-The `<Provider />` component takes a required `id` prop. This id may be anything, but will typically be a custom Provider component. More on those in the next section.
-
-In our first example, we used a string (`'root'`) as the Provider's `id` prop. This is basically frowned upon and don't do it. For real. But you can. If you want. Just please export the string as a constant so you're not magic-stringificating all over the place.
-
-### Custom Providers
-
-In React Zedux, a store specifies how it's consumed. In practice, we'll rarely use `<Provider />` components on the fly. Typically we'll wrap them in a custom Provider component that adds additional functionality for consumers. Custom Providers also serve as an easy identifier for the stores they provide.
-
-Custom Providers are the "component" in component-bound stores; they create a store in their `constructor` (or as a class field, if you're cool enough for that):
-
-```javascript
-import React, { Component } from 'react'
-import { Provider, createStore } from 'react-zedux'
+/*
+  React Zedux creates consumable contexts from observables.
+  Here we're using a global Zedux store. But we could use
+  any observable (e.g. from RxJS or a Redux store).
+*/
+const store = createStore()
+  .hydrate('world')
 
 /*
-  Meet your first custom Provider.
-  He's a React component that wraps his children in the special
-  <Provider /> component. He also creates a component-bound store
-  whose life is tied to his own lifecycle.
-
-  Note that we set the `id` prop to TodosProvider itself
+  Meet the Context. This guy makes our dreams come true.
+  Just pass the observable to createContext() and React Zedux
+  will handle subscribing and reacting to updates.
 */
-class TodosProvider extends Component {
-  store = createStore()
-
-  render() {
-    return (
-      <Provider id={TodosProvider} store={this.store}>
-        {this.props.children}
-      </Provider>
-    )
-  }
-}
-```
-
-The custom Provider will **not** typically subscribe to its store &ndash; that's the consumer's job. But, of course, if there is any cleanup work to do with the store, that'll go in the custom Provider's `componentWillUnmount` lifecycle hook.
-
-Component + Provider combos are the meat of React Zedux. You'll quickly find that this pattern is more effective than React's built-in state handling when even very shallow component hierarchies are involved.
-
-This also encourages a very strict separation of data and ui. Most apps will be able to use class components for custom Providers and function components for everything else.
-
-### Consuming the store
-
-So this Provider stuff is cool and all...but how does a child component *use* it? Why, `withStores()`, of course. `withStores()` is an Higher-Order Component that wraps a component in any number of stores.
-
-Let's continue with our `TodosProvider` example above:
-
-```javascript
-import { withStores } from 'react-zedux'
+const Context = createContext(store)
 
 /*
-  Here's the component in our Component + Provider combo.
-  He just wraps his children in the TodosProvider.
-  Easy, easy.
+  The Context works just like a normal React Context object.
+  We just provide and consume it:
 */
-function Todos() {
-  return (
-    <TodosProvider>
-      <TodoList />
-    </TodosProvider>
-  )
-}
-
-/*
-  Let's consume this thing!
-  This is a simple component wrapped in the withStores HOC.
-  `todosStore` is the name of prop we want passed to our component.
-  `TodosProvider` is that store's id. This is the value of the `id`
-  prop we passed to the Provider.
-*/
-const TodoList = withStores({
-  todosStore: TodosProvider
-})(
-  ({ todosStore }) => todosStore.getState().map(
-    todo => <p key={todo.id}>{todo.text}</p>
-  )
+const HelloWorld = () => (
+  <Context.Provider>
+    <Context.Consumer>
+      {store => 'hello ' + store.getState()}
+    </Context.Consumer>
+  </Context.Provider>
 )
 ```
 
-`withStores()` accepts a single argument - a props-to-storeIds map. React Zedux will find the specified stores in the list of provided stores and pass them to our component as the specified props.
+React Zedux actually has a shorthand for this "provide and consume" scenario:
 
-The "store" passed to the wrapped component will actually be an object that extends the store. This object has a single extra prop &ndash; `state` &ndash; whose value is guaranteed to be the current state of the store. This can be convenient for parameter destructuring:
-
-```javascript
-({
-  todosStore: { state }
-}) => state.map(
-  todo => <p key={todo.id}>{todo.text}</p>
+```js
+const HelloWorld = () => (
+  <Context.Injector>
+    {store => 'hello ' + store.getState()}
+  </Context.Injector>
 )
 ```
 
-### Time travel
+We can use `<Context.Injector>` to simultaneously provide and consume the store. This is mostly just for your prototyping pleasure, though it certainly has some uses (e.g. encouraging a strict separation of data and ui and allowing a parent Provider to also consume the observable it provides).
 
-Wouldn't it be great if we could have global stores and component-bound stores and still keep a single, global record of all state changes? Oh! We can.
+Typically we'll use a `<Context.Provider>` together with any number of `<Context.Consumer>`s. The power of Consumers, of course, is that they can consume the provided observable even as a deeply nested descendant of the Provider.
 
-```javascript
-import React, { Component } from 'react'
-import { render } from 'react-dom'
-import { Provider, createStore } from 'react-zedux'
+### Higher-Order Components
 
-// The root store is where we'll implement time travel
-const rootStore = createStore()
+We can consume a Context by using either render props or Higher-Order Components. The following two examples are equivalent:
 
-// Our custom provider
-class CounterProvider extends Component {
-  static storeIdCounter = 0
+**Render prop:**
 
-  store = createStore().hydrate(0) // set the initial state
-  storeId = 'counter' + CounterProvider.storeIdCounter++
+```js
+import Context from './contexts/Context'
 
-  componentDidMount() {
+const App = () => (
+  <Context.Injector>
+    {store =>
 
-    // The magic; attach each counter store to the root store
-    rootStore.use({ [this.storeId]: this.store })
-  }
-
-  componentWillUnmount() {
-
-    // Unattach each counter store when its component dies
-    rootStore.use({ [this.storeId]: null })
-  }
-
-  render() {
-    return this.store.getState()
-  }
-}
-
-// Render some stuff for fun
-render(
-  <div>
-    <CounterProvider />
-    <CounterProvider />
-  </div>,
-  document.getElementById('root'),
-  () => {
-    rootStore.getState() // { counter1: 0, counter2: 0 }
-  }
+      // This function-as-child is a render prop.
+      // A wrapped form of the Context's observable is
+      // passed to this function.
+      store.getState()
+    }
+  </Context.Injector>
 )
 ```
 
-Here we accessed the rootStore globally, but we can just as easily wrap a custom Provider in a `withStores()` HOC that grabs a parent store for us. On that note, we don't have to attach everything directly to the root. This is a hierarchy, after all! We could attach it to a store that attaches to a store that attaches to the root. Neat, eh?
+**HOC:**
 
-### Comparison to React Redux
+```js
+import Context from './contexts/Context'
 
-If you're coming from [React Redux](https://github.com/reactjs/react-redux), here's a side-by-side comparison:
-
-React Redux | React Zedux
-------------|------------
-A component specifies how it consumes the store &ndash; `connect()` | A store specifies how it's consumed &ndash; usually via custom Providers
-A single root store is provided to all components | Many stores are provided at different points in the component hierarchy
-Global store(s) | Global and component-bound stores
-Various "state" and "dispatch" props are injected into the wrapped component | A single prop per store is injected into the wrapped component
-Bloated presentational components | Bloated container components
-`mapStateToProps` and `mapDispatchToProps` | `mapStoresToProps`
-
-Since Zedux stores are composable, each store will typically be much smaller than a Redux store. This makes it much more practical for individual components to interface with the store itself.
-
-Also worth noting, both React Redux and React Zedux bloat your code somewhere. React Redux bloats presentational component files a little more. React Zedux chooses to offload that bloat to the more sparse and data-capable container components.
-
-### A full example
-
-Alright, enough talk. Here's a full simple counter app:
-
-```javascript
-import React, { Component, Fragment } from 'react'
-import { render } from 'react-dom'
-import { Provider, createStore, withStores } from 'react-zedux'
-
-class CounterProvider extends Component {
-  constructor(props) {
-    super(props)
-
-    // We use Object.create() to extend the store so we're not
-    // destroying any built-ins. Not usually necessary.
-    const store = Object.create(createStore().hydrate(0))
-
-    store.increment = () => store.dispatch(state => state + 1)
-    store.decrement = () => store.dispatch(state => state - 1)
-
-    this.store = store
-  }
-
-  render() {
-    return (
-      <Provider id={CounterProvider} store={this.store}>
-        {this.props.children}
-      </Provider>
-    )
-  }
-}
-
-function Counter() {
-  return (
-    <CounterProvider>
-      <CounterDisplay />
-      <CounterControls />
-    </CounterProvider>
-  )
-}
-
-const CounterDisplay = withStores({
-  counterStore: CounterProvider
-})(
-  ({ counterStore: { state } }) => `Counter value: ${state}`
-)
-
-const CounterControls = withStores({
-  counterStore: CounterProvider
-})(
-  ({ counterStore: { increment, decrement } }) => (
-    <Fragment>
-      <button onClick={increment}>Increment</button>
-      <button onClick={decrement}>Decrement</button>
-    </Fragment>
-  )
-)
-
-render(
-  <Fragment>
-    <Counter />
-    <Counter />
-    <Counter />
-  </Fragment>,
-  document.getElementById('root')
+// Context.inject() is an HOC alternative to <Context.Injector>
+// The render prop is now gone. In its place, we're telling React
+// Zedux to pass the store to the wrapped component as a normal
+// prop called "store"
+const App = Context.inject('store')(
+  ({ store }) => store.getState()
 )
 ```
+
+See the [inject HOC documentation](https://bowheart.github.io/react-zedux/docs/types/context/inject) for more info on this guy. Also see the [consume HOC](https://bowheart.github.io/react-zedux/docs/types/context/inject) for all possible overloads of `Context.inject()`.
+
+### The Context object
+
+The [Context object](https://bowheart.github.io/react-zedux/docs/types/Context) returned by `createContext()` contains 3 React (First-Order) components:
+
+```js
+import { createContext } from 'react-zedux'
+import { createStore } from 'zedux'
+
+const Context = createContext(createStore())
+
+Context.Provider // provides the observable to descendants
+Context.Consumer // consumes a provided observable
+Context.Injector // a shorthand for providing and consuming
+```
+
+and 3 Higher-Order Components:
+
+```js
+Context.provide
+Context.consume()
+Context.inject()
+```
+
+> Note that unlike `Context.consume()` and `Context.inject()`, `Context.provide` is not curried.
+
+You can get by with just `<Context.Provider>` and `<Context.Consumer>`. The rest is just sugar, but it definitely comes in handy.
+
+See the [Context docs](https://bowheart.github.io/react-zedux/docs/types/context/inject).
+
+### Render props!
+
+`<Context.Consumer>` and `<Context.Injector>` take a single function as their only child. This is the [render prop technique](https://reactjs.org/docs/render-props.html) and works exactly like React's `<Context.Consumer>`. This function will be called every time the context's obervable emits (read: "the store's state updates").
+
+Render props are awesome, but they can lead to rightward code drift. You could use another library such as [react-composer](https://github.com/jamesplease/react-composer) to prevent this. But we could just as easily use the Zedux `compose()` utility with the Context's Higher-Order Components:
+
+```js
+import { createContext } from 'react-zedux'
+import { compose, createStore } from 'zedux'
+
+const HelloContext = createContext(
+  createStore().hydrate('hello')
+)
+const WorldContext = createContext(
+  createStore().hydrate('world')
+)
+
+const HelloWorld = compose(
+  HelloContext.inject('helloStore'),
+  WorldContext.inject('worldStore')
+)(
+  ({ helloStore, worldStore }) =>
+    `${helloStore.getState()} ${worldStore.getState()}`
+)
+```
+
+The render props are now gone, replaced with normal, explicitly named props. This HelloWorld component is equivalent to:
+
+```js
+const HelloWorld = () => (
+  <HelloContext.Provider>
+    <HelloContext.Consumer>
+      {helloStore => (
+        <WorldContext.Provider>
+          <WorldContext.Consumer>
+            {worldStore =>
+              `${helloStore.getState()} ${worldStore.getState()}`
+            }
+          </WorldContext.Consumer>
+        </WorldContext.Provider>
+      )}
+    </HelloContext.Consumer>
+  </HelloContext.Provider>
+)
+```
+
+You can see why React Zedux offers some sugar.
 
 ### Summary
 
-We use `<Provider />` to provide a store to a component's descendants.
+We use [`createContext()`](https://bowheart.github.io/react-zedux/docs/api/createContext) to create a Context from an observable or StoreApi.
 
-We use `withStores()` to access stores provided by parents.
+We use [`<Context.Provider>`](https://bowheart.github.io/react-zedux/docs/types/context/Provider) to provide the observable to descendants.
 
-Every provided store needs a unique identifier, which will usually be a custom Provider component.
+We use [`<Context.Consumer>`](https://bowheart.github.io/react-zedux/docs/types/context/Consumer) to consume a provided observable.
 
-Custom Providers are used to define a store's api &ndash; how child components can interact with the store. This is nice for binding action creators, selectors, and hooks to the store.
+We use [`<Context.Injector>`](https://bowheart.github.io/react-zedux/docs/types/context/Injector) to simultaneously provide and consume the store.
 
-We can create global or component-bound stores. Attaching component-bound stores to the global store hierarchy is easy, but not always necessary.
+[`Context.provide`](https://bowheart.github.io/react-zedux/docs/types/context/provide), [`Context.consume()`](https://bowheart.github.io/react-zedux/docs/types/context/consume), and [`Context.inject()`](https://bowheart.github.io/react-zedux/docs/types/context/inject) are alternatives to their First-Order counterparts, with a few added features.
 
-And that's really it. There's not much to it. Go rock the state management world!
+We didn't get to [component-bound stores](https://bowheart.github.io/react-zedux/docs/api/StoreApi), [time travel](https://bowheart.github.io/react-zedux/docs/guides/timeTravel), or general [usage with observables](https://bowheart.github.io/react-zedux/docs/guides/usingObservables), but check all that out in the [full documentation](https://bowheart.github.io/react-zedux/docs/gettingStarted/gettingStarted/overview)!
 
 ### Notes
 
 We used zero configuration patterns in all these examples. This was for simplicity, of course. Don't let this fool you! Every one of these stores is capable of containing every last speck of Zedux awesomeness.
 
 We also didn't name our wrapped function components. We should.
-
-## Method API
-
-React Zedux exposes one First-Order Component:
-
-- `<Provider />`
-
-and two Higher-Order Components:
-
-- `withStores()`
-- `withProvider()`
-
-### `<Provider />`
-
-Provides a store to its descendants.
-
-Props:
-
-- **id** - any (required) - Anything that uniquely identifies the store. Usually a custom Provider component that wraps its children in a `<Provider />`.
-
-- **store** - Observable (required) - Any object with a `subscribe()` method that returns a `subscription` object that contains an `unsubscribe()` method. Phew. Will typically be a Zedux store or an object extending it.
-
-```javascript
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import { Provider, createStore } from 'react-zedux'
-
-export default TodosProvider extends Component {
-  static propTypes = {
-    children: PropTypes.node.isRequired
-  }
-
-  store = createStore().hydrate([])
-
-  render() {
-    return (
-      <Provider id={TodosProvider} store={this.store}>
-        {this.props.children}
-      </Provider>
-    )
-  }
-}
-```
-
-### `withStores()`
-
-An HOC. Pulls any number of stores off the list of provided stores and passes them to the wrapped store via props. Handles subscribing to and unsubscribing from the provided stores.
-
-Params:
-
-- **mapStoresToProps** - non-empty object (required) - A map of `propName` to `storeId` pairs.
-
-Returns a component enhancer used to wrap a component in the given store(s). The wrapped component will receive `extendedStore` objects as the requested props.
-
-An `extendedStore` object contains one property &ndash; `state` &ndash; whose value is guaranteed to always be the current state of the store. The `extendedStore` object's prototype will be the store itself.
-
-```javascript
-import React from 'react'
-import { withStores } from 'react-zedux'
-import TodosProvider from './TodosProvider'
-
-export default withStores({
-  todosStore: TodosProvider
-})(TodoList)
-
-function TodoList({
-  todosStore: { state: todos }
-}) {
-  return (
-    todos.map(todo =>
-      <p key={todo.id}>{todo.text}</p>
-    )
-  )
-}
-```
-
-### `withProvider()`
-
-An HOC. Wraps a component in a custom Provider.
-
-We skipped this guy in the quick start. He's just a convenient shorthand when a component needs to provide a store to its descendants, but also needs access to the store.
-
-Params:
-
-- **CustomProvider** - React component (required) - Should be a component that wraps its children in a `<Provider />` component.
-
-Returns a component enhancer used to wrap a component in the given Provider.
-
-```javascript
-import React, { Fragment } from 'react'
-import { compose, withProvider, withStores } from 'react-zedux'
-import TodosProvider from './TodosProvider'
-import TodoList from './TodoList'
-
-// Simultaneously provide and consume the store
-const enhance = compose(
-  withProvider(TodosProvider),
-  withStores({ todosStore: TodosProvider })
-)
-
-export default enhance(Todos)
-
-function Todos({
-  todosStore: { state: todos }
-}) {
-  return (
-    <Fragment>
-      <div>Total todos: {todos.length}</div>
-      <TodoList />
-    </Fragment>
-  )
-}
-```
-
-These provide/consume enhancers can actually be used as a decent replacement for React's built-in state management. This makes for some nice separation of concerns:
-
-```javascript
-import React, { Component } from 'react'
-import {
-  Provider, compose, createStore, withProvider, withStores
-} from 'react-zedux'
-
-class FormProvider extends Component {
-  store = createStore()
-    .hydrate({
-      firstName: '',
-      lastName: ''
-    })
-
-  componentWillMount() {
-    this.store.setField = ({ currentTarget }) => {
-      this.store.setState({
-        [currentTarget.name]: currentTarget.value
-      })
-    }
-  }
-
-  render() {
-    return (
-      <Provider id={FormProvider} store={this.store}>
-        {this.props.children}
-      </Provider>
-    )
-  }
-}
-
-function FormUi({ formStore: { setField, state } }) {
-  return (
-    <form>
-      <input name="firstName" value={state.firstName} onChange={setField} />
-      <input name="lastName" value={state.lastName} onChange={setField} />
-    </form>
-  )
-}
-
-export default compose(
-  withProvider(FormProvider),
-  withStores({ formStore: FormProvider })
-)(FormUi)
-```
-
-Do we recommend this? Well...
 
 ## Contributing
 

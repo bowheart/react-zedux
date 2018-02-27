@@ -1,18 +1,278 @@
 import { Component, ComponentClass, ComponentType, ReactNode } from 'react'
 
-import { Observable, Store } from 'zedux'
+import { Actor, Selector } from 'zedux'
 
-export * from 'zedux'
+/**
+ * Create an api around an observable (e.g. a Zedux store).
+ * The observable must be exposed on each instance of the class
+ * as a property named `store`.
+ *
+ * A class that extends StoreApi can be passed to
+ * ReactZedux.createContext()
+ *
+ * React Zedux will instantiate the class and bind actors
+ * and selectors to the store.
+ *
+ * @prop {ActorsMap} [actors] - A hash (can be nested) of actors
+ *   to bind to the store and attach to the StoreApi instance.
+ * 
+ * @prop {SelectorsMap} [selectors] - A hash (can be nested) of selectors
+ *   to bind to the store and attach to the StoreApi instance.
+ * 
+ * @export
+ * @class StoreApi
+ */
+export class StoreApi<TState> {
+
+  /**
+   * Performs the actor/selector binding and flattening.
+   *
+   * React Zedux uses this internally, but it can be useful for testing.
+   *
+   * Will throw an error if the StoreApi instance does not have a visible
+   * `store` property.
+   * 
+   * @returns {StoreApi} for chaining
+   * @memberof StoreApi
+   */
+  _bindControls(): StoreApi<TState>
+}
+
+
+/**
+ * Creates a consumable context out of a state container.
+ * 
+ * The state container can be either:
+ *   1. An observable (e.g. a Zedux store)
+ *   2. A class that extends ReactZedux.StoreApi
+ * 
+ * Since `new [class that extends StoreApi]()` must return an object that
+ * has an observable `store` property, option 2 is really just an
+ * extension of option 1. But since it will be instantiated once for
+ * every <Provider>, it allows for dynamic observable creation.
+ * 
+ * Returns an object containing 3 First-Order Components:
+ * 
+ * <Provider>, <Consumer>, and <Injector>
+ * 
+ * and their corresponding Higher-Order Components:
+ * 
+ * provide(), consume(), inject()
+ * 
+ * Provider and Consumer must be used together.
+ * An error will be thrown if Consumer is used alone.
+ *
+ * Use Injector to simultaneously provide and consume the context.
+ * 
+ * @export
+ * @template TState The state type emitted by the observable
+ * @template TContainer The state container type
+ * @param {TContainer} stateContainer The state container.
+ *   Can be either an observable or a class that extends ReactZedux.StoreApi
+ * 
+ * @returns {Context<WrappedStateContainer<TState, TContainer>>}
+ */
+export function createContext<
+  TState,
+  TContainer extends StateContainer<TState>
+>(
+  stateContainer: TContainer
+): Context<WrappedStateContainer<TState, TContainer>>
+
+
+export interface ActorsMap {
+  [key: string]: Actor
+}
+
+
+export interface Consumer<TWrappedContainer> extends Component<
+  ConsumerProps<TWrappedContainer>,
+  {}
+> {}
+
+
+export interface ConsumerComponentEnhancer<
+  TEnhancerProps,
+  TConsumerProps extends TEnhancerProps
+> {
+  (component: ComponentType): ComponentClass<
+    Omit<TConsumerProps, keyof TEnhancerProps>
+  >
+}
+
+
+export interface ConsumerProps<TWrappedContainer> {
+  children: (value: TWrappedContainer) => ReactNode
+}
+
+
+export interface Context<TWrappedContainer> {
+  Provider: Provider<TWrappedContainer>
+
+  provide<TProps extends Object = {}>(
+    component: ComponentType
+  ): ComponentClass<TProps>
+
+  Consumer: Consumer<TWrappedContainer>
+
+  consume<TConsumerProps extends TWrappedContainer>():
+    ConsumerComponentEnhancer<TWrappedContainer, TConsumerProps>
+
+  consume<
+    TConsumerProps extends {[s in TStorePropName]: TWrappedContainer },
+    TStorePropName extends string
+  >(
+    mapStoreToProps?: TStorePropName
+  ): ConsumerComponentEnhancer<
+    { [s in TStorePropName]: TWrappedContainer },
+    TConsumerProps
+  >
+
+  consume<
+    TConsumerProps extends TListOfPropsToPluck,
+    TListOfPropsToPluck extends string[]
+  >(
+    mapStoreToProps?: TListOfPropsToPluck
+  ): ConsumerComponentEnhancer<
+    TListOfPropsToPluck,
+    TConsumerProps
+  >
+
+  consume<
+    TConsumerProps extends TMappedProps,
+    TMappedProps extends Object
+  >(
+    mapStoreToProps?: (store: TWrappedContainer) => TMappedProps
+  ): ConsumerComponentEnhancer<
+    TMappedProps,
+    TConsumerProps
+  >
+
+  Injector: Injector<TWrappedContainer>
+
+  inject<TConsumerProps extends TWrappedContainer>():
+    ConsumerComponentEnhancer<TWrappedContainer, TConsumerProps>
+
+  inject<
+    TConsumerProps extends {[s in TStorePropName]: TWrappedContainer },
+    TStorePropName extends string
+  >(
+    mapStoreToProps?: TStorePropName
+  ): ConsumerComponentEnhancer<
+    {[s in TStorePropName]: TWrappedContainer },
+    TConsumerProps
+  >
+
+  inject<
+    TConsumerProps extends TListOfPropsToPluck,
+    TListOfPropsToPluck extends string[]
+  >(
+    mapStoreToProps?: TListOfPropsToPluck
+  ): ConsumerComponentEnhancer<
+    TListOfPropsToPluck,
+    TConsumerProps
+  >
+
+  inject<
+    TConsumerProps extends TMappedProps,
+    TMappedProps extends Object
+  >(
+    mapStoreToProps?: (store: TWrappedContainer) => TMappedProps
+  ): ConsumerComponentEnhancer<
+    TMappedProps,
+    TConsumerProps
+  >
+}
+
+
+export interface Injector<TWrappedContainer> extends Component<
+  Omit<ProviderProps<TWrappedContainer>, 'children'>
+    & ConsumerProps<TWrappedContainer>,
+  {}
+> {}
+
+
+export interface Observable<TState> {
+  getState?(): TState
+  subscribe(observer: Observer<TState>): Subscription | (() => void)
+}
+
+
+export interface Provider<TWrappedContainer> extends Component<
+  ProviderProps<TWrappedContainer>,
+  {}
+> {}
+
+
+export interface ProviderProps<TWrappedContainer> {
+  children?: ReactNode
+  onMount?: (store: TWrappedContainer) => void
+  onUnmount?: (store: TWrappedContainer) => void
+}
+
+
+export interface SelectorsMap {
+  [key: string]: Selector
+}
+
+
+export interface StoreApi<TState> {
+  store: Observable<TState>
+}
+
+
+export interface StoreApiConstructor<TState> {
+  new (): StoreApi<TState>
+  actors?: ActorsMap
+  selectors?: SelectorsMap
+}
+
+
+export interface Subscription {
+  unsubscribe(): void
+}
+
+
+export type ListOfPropsToPluck<TWrappedContainer> =
+  Array<keyof TWrappedContainer>
+
+
+export type Observer<TState> = { next(newState: TState): void }
+  | ((newState: TState) => void)
+  | (() => void)
+
+
+export type StateContainer<TState> = Observable<TState>
+  | StoreApiConstructor<TState>
+
+
+export type StorePropName = string
+
+
+export type StoreToPropsMap<TWrappedContainer> = StorePropName
+  | ListOfPropsToPluck<TWrappedContainer>
+  | StoreToPropsMapper<TWrappedContainer>
+
+
+export type StoreToPropsMapper<TWrappedContainer> =
+  (store: TWrappedContainer) => { [key: string]: any }
+
+
+export type WrappedStateContainer<TState, TContainer> = TContainer & {
+  state: Readonly<TState>
+  store: TContainer
+}
 
 
 type Diff<
   T extends string,
   U extends string
 > = (
-  { [P in T]: P }
-  & { [P in U]: never }
+  {[P in T]: P }
+  & {[P in U]: never }
   & { [x: string]: never }
 )[T]
+
 
 type Omit<
   T,
@@ -21,170 +281,3 @@ type Omit<
   T,
   Diff<keyof T, K>
 >
-
-
-export interface StoreApiConfiguration<Actors, Hooks, Selectors> {
-  actors?: Actors
-  hooks?: Hooks
-  selectors?: Selectors
-}
-
-
-export interface StoreComponentEnhancer<
-  TInjectedProps,
-  P extends TInjectedProps
-> {
-  (
-    component: ComponentType<P>
-  ): ComponentClass<
-    Omit<P, keyof TInjectedProps>
-  > & { WrappedComponent: Component<P> }
-}
-
-
-export interface PropsToStoreIdsMap {
-  [s: string]: StoreId
-}
-
-
-export interface ProviderComponentEnhancer<P> {
-  (component: ComponentType): ComponentClass<P>
-    & { WrappedComponent: Component<P> }
-}
-
-
-export interface ProviderProps {
-  children?: ReactNode
-  id: any
-  store: Observable<any>
-}
-
-
-/**
-  A component that provides a store to its descendants.
-  Any descendant can grab the store using `withStores()`.
-
-  Since a Zedux app will typically have many stores, each Provided
-  store in the component hierarchy needs an identifier of some sort.
-
-  For singleton stores, the identifier can be the store itself.
-
-  For component-bound stores, the identifier may be a component
-  that composes this Provider. For example:
-
-    class TodosProvider extends Component {
-      store = createStore()
-
-      render() {
-        return (
-          <Provider id={TodosProvider} store={this.store}>
-            {this.props.children}
-          </Provider>
-        )
-      }
-    }
-*/
-export class Provider extends Component<ProviderProps, {}> {}
-
-
-/**
-  Creates an api for a Zedux store
-
-  The returned object extends the store - the store is set
-  as the api's prototype.
-
-  Accepts a storeApiConfiguration object with three optional properties:
-    - actors - a map of actors that will be "bound" to the store.
-    - hooks - a map of curried hooks. Often used to wrap actors and
-        selectors with extra checks/functionality. These have the form:
-
-          const myHook = storeApi => () => {}
-
-    - selectors -  a map of selectors that will be "bound" to the store.
-
-  These are all objects whose properties will be merged together to
-  form the store's api.
-
-  Throws an error if there are any property overlaps between the
-  actors, hooks, selectors, and the store's own properties.
-
-  @template StoreType The specific type of the given Zedux store
-  @template Actors The type of the actors map
-  @template Hooks The type of the hooks map
-  @template Selectors The type of the selectors map
-
-  @returns {Actors & Hooks & Selectors & StoreType} An object that extends
-    the store and contains all properties of all passed maps.
-*/
-export function createStoreApi<
-  StoreType extends Store = Store,
-  Actors extends Object = {},
-  Hooks extends Object = {},
-  Selectors extends Object = {}
->(
-  store: StoreType,
-  storeApiConfiguration: StoreApiConfiguration<Actors, Hooks, Selectors>
-): Actors & Hooks & Selectors & StoreType
-
-
-/**
-  Wraps a component in a Provider.
-
-  Useful when a component needs to provide a store to its children
-  but also needs access to the store.
-
-  Only supports a single Provider. If multiple are needed, they
-  can be composed together.
-
-  Example usage:
-
-    const provideAndConsume = compose(
-      withProvider(TodosProvider),
-      withProvider(TodontsProvider),
-      withStores({
-        todos: TodosProvider,
-        todonts: TodontsProvider
-      })
-    )
-
-    const WrappedTodos = provideAndConsume(Todos)
-
-    @template P The props type of the wrapped component
-*/
-export function withProvider<P = {}>(
-  provider: Provider
-): ProviderComponentEnhancer<P>
-
-
-/**
-  Accesses a store provided by a parent, passing it as a prop
-  to the wrapped component.
-
-  Since multiple parents may provide stores, each store needs an
-  identifier of some sort. This identifier must be the "id" prop
-  of a parent Provider:
-
-    <Provider id={theId} ... > ... </Provider>
-
-  This identifier must then be used to link this child store to
-  the provided store:
-
-    withStores({ storePropName: theId })(Child)
-
-  @template TPropsToStoreIdsMap A map of prop names to store ids.
-    Each store will be located by its id and passed to the wrapped
-    component as the given prop
-
-  @template P The props type of the wrapped component
-
-  @returns {StoreComponentEnhancer}
-*/
-export function withStores<
-  TPropsToStoreIdsMap extends PropsToStoreIdsMap = {},
-  P extends TPropsToStoreIdsMap = TPropsToStoreIdsMap
->(
-  propsToStoreIdsMap: TPropsToStoreIdsMap
-): StoreComponentEnhancer<TPropsToStoreIdsMap, P>
-
-
-export type StoreId = any

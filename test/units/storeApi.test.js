@@ -1,232 +1,157 @@
-import { addActors, addHooks, addSelectors } from '../../src/utils/storeApi'
+import {
+  assertKeyDoesNotExist,
+  attachActors,
+  attachSelectors
+} from '../../src/utils/storeApi'
+import { nonPlainObjects } from '../utils'
 
 
-describe('addActors()', () => {
+describe('assertKeyDoesNotExist()', () => {
 
-  test('does nothing if a non-object is passed', () => {
+  test('returns true if key does not exist in storeApi', () => {
 
     const storeApi = {}
-    const actors = []
-    actors.a = () => {}
+    const key = 'a'
 
-    addActors(storeApi, actors)
-
-    expect(Object.keys(storeApi)).toHaveLength(0)
+    expect(assertKeyDoesNotExist(storeApi, key)).toBe(true)
 
   })
 
 
-  test('throws an error if an actor\'s key exists in the storeApi', () => {
+  test('throws an Error if key exists in storeApi', () => {
 
     const storeApi = {
-      a: 1
+      a: null
     }
-    const actors = {
-      a: 2
-    }
+    const key = 'a'
 
     expect(
-      addActors.bind(null, storeApi, actors)
+      assertKeyDoesNotExist.bind(null, storeApi, key)
     ).toThrowError(/duplicate key/i)
 
   })
 
+})
 
-  test('creates a new function with the same `type` and `toString()` properties as the original actor', () => {
 
-    const storeApi = {}
-    const actor = () => {}
+describe('attachActors()', () => {
 
-    actor.type = 'a'
-    actor.toString = () => actor.type
+  test('does nothing if actors is not a plain object', () => {
 
-    const actors = { actor }
-
-    addActors(storeApi, actors, () => {})
-
-    expect(storeApi.actor).not.toBe(actor)
-    expect(storeApi.actor.type).toBe(actor.type)
-    expect(storeApi.actor.toString).toBe(actor.toString())
+    nonPlainObjects.forEach(
+      nonPlainObject => expect(
+        attachActors(null, nonPlainObject)
+      ).toBeUndefined()
+    )
 
   })
 
 
-  test('wraps the actor in a call to dispatch()', () => {
+  test('binds an actor to the store and attaches it to the storeApi', () => {
 
     const storeApi = {}
-    const actor = jest.fn(() => 'a')
+    const actors = {
+      a: jest.fn(() => 'a')
+    }
     const dispatch = jest.fn()
 
-    const actors = { actor }
+    attachActors(storeApi, actors, dispatch)
 
-    addActors(storeApi, actors, dispatch)
+    expect(storeApi).toEqual({
+      a: expect.any(Function)
+    })
 
-    storeApi.actor('b')
+    storeApi.a(1)
 
-    expect(actor).toHaveBeenCalledWith('b')
+    expect(actors.a).toHaveBeenCalledWith(1)
     expect(dispatch).toHaveBeenCalledWith('a')
 
   })
 
 
-  test('allows for nested actor collections', () => {
+  test('binds a nested actor to the store and atteches it to the storeApi preserving nesting', () => {
 
     const storeApi = {}
-    const actor = () => {}
+    const actors = {
+      a: {
+        b: jest.fn(() => 'b')
+      }
+    }
+    const dispatch = jest.fn()
 
-    const actors = { nested: { actor } }
+    attachActors(storeApi, actors, dispatch)
 
-    addActors(storeApi, actors, () => {})
+    expect(storeApi).toEqual({
+      a: {
+        b: expect.any(Function)
+      }
+    })
 
-    expect(typeof storeApi.nested).toBe('object')
-    expect(typeof storeApi.nested.actor).toBe('function')
+    storeApi.a.b(1)
+
+    expect(actors.a.b).toHaveBeenCalledWith(1)
+    expect(dispatch).toHaveBeenCalledWith('b')
 
   })
 
 })
 
 
-describe('addHooks()', () => {
+describe('attachSelectors()', () => {
 
-  test('does nothing if a non-object is passed', () => {
+  test('does nothing if selectors is not a plain object', () => {
+
+    nonPlainObjects.forEach(
+      nonPlainObject => expect(
+        attachSelectors(null, nonPlainObject)
+      ).toBeUndefined()
+    )
+
+  })
+
+
+  test('binds a selector to the store and attaches it to the storeApi', () => {
 
     const storeApi = {}
-    const hooks = []
-    hooks.a = () => {}
-
-    addHooks(storeApi, hooks)
-
-    expect(Object.keys(storeApi)).toHaveLength(0)
-
-  })
-
-
-  test('throws an error if a hook\'s key exists in the storeApi', () => {
-
-    const storeApi = {
-      a: 1
-    }
-    const hooks = {
-      a: 2
-    }
-
-    expect(
-      addHooks.bind(null, storeApi, hooks)
-    ).toThrowError(/duplicate key/i)
-
-  })
-
-
-  test('throws an error if the hook does not return a function', () => {
-
-    const storeApi = {}
-    const hooks = {
-      hook: () => {}
-    }
-
-    expect(
-      addHooks.bind(null, storeApi, hooks)
-    ).toThrowError(/hook did not return a function/i)
-
-  })
-
-
-  test('partially applies the hook, passing the storeApi', () => {
-
-    const storeApi = {}
-    const hookImplementation = jest.fn()
-    const hook = jest.fn(() => hookImplementation)
-
-    const hooks = { hook }
-
-    addHooks(storeApi, hooks)
-
-    expect(hook).toHaveBeenCalledWith(storeApi)
-
-    storeApi.hook('b')
-
-    expect(hookImplementation).toHaveBeenCalledWith('b')
-
-  })
-
-
-  test('allows for nested hook collections', () => {
-
-    const storeApi = {}
-    const hook = () => () => {}
-
-    const hooks = { nested: { hook } }
-
-    addHooks(storeApi, hooks)
-
-    expect(typeof storeApi.nested).toBe('object')
-    expect(typeof storeApi.nested.hook).toBe('function')
-
-  })
-
-})
-
-
-describe('addSelectors()', () => {
-
-  test('does nothing if a non-object is passed', () => {
-
-    const storeApi = {}
-    const selectors = []
-    selectors.a = () => {}
-
-    addSelectors(storeApi, selectors)
-
-    expect(Object.keys(storeApi)).toHaveLength(0)
-
-  })
-
-
-  test('throws an error if a selector\'s key exists in the storeApi', () => {
-
-    const storeApi = {
-      a: 1
-    }
     const selectors = {
-      a: 2
+      a: jest.fn(() => 'a')
     }
+    const getState = jest.fn(() => 'b')
 
-    expect(
-      addSelectors.bind(null, storeApi, selectors)
-    ).toThrowError(/duplicate key/i)
+    attachSelectors(storeApi, selectors, getState)
 
-  })
+    expect(storeApi).toEqual({
+      a: expect.any(Function)
+    })
 
-
-  test('calls getState(), passing the result and any other args to the selector', () => {
-
-    const storeApi = {}
-    const selector = jest.fn()
-    const getState = jest.fn(() => 'a')
-
-    const selectors = { selector }
-
-    addSelectors(storeApi, selectors, getState)
-
-    storeApi.selector('b')
-
-    expect(selector).toHaveBeenCalledWith('a', 'b')
-    expect(getState).toHaveBeenCalled()
+    expect(storeApi.a(1)).toBe('a')
+    expect(selectors.a).toHaveBeenCalledWith('b', 1)
+    expect(getState).toHaveBeenCalledTimes(1)
 
   })
 
 
-  test('allows for nested selector collections', () => {
+  test('binds a nested selector to the store and atteches it to the storeApi preserving nesting', () => {
 
     const storeApi = {}
-    const selector = () => {}
+    const selectors = {
+      a: {
+        b: jest.fn(() => 'b')
+      }
+    }
+    const getState = jest.fn(() => 'c')
 
-    const selectors = { nested: { selector } }
+    attachSelectors(storeApi, selectors, getState)
 
-    addSelectors(storeApi, selectors, () => {})
+    expect(storeApi).toEqual({
+      a: {
+        b: expect.any(Function)
+      }
+    })
 
-    expect(typeof storeApi.nested).toBe('object')
-    expect(typeof storeApi.nested.selector).toBe('function')
+    expect(storeApi.a.b(1)).toBe('b')
+    expect(selectors.a.b).toHaveBeenCalledWith('c', 1)
+    expect(getState).toHaveBeenCalledTimes(1)
 
   })
 

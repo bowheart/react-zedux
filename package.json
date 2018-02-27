@@ -15,7 +15,12 @@
     "build:umd": "cross-env NODE_ENV=development rollup -c",
     "build:umd:min": "cross-env NODE_ENV=production rollup -c -o dist/react-zedux.min.js",
     "build:es": "rollup -c -f es -o dist/react-zedux.es.js",
-    "dev": "npm run build:umd -- -w & npm run build:umd:min -- -w & npm run build:es -- -w",
+    "dev": "npm run build:umd -- -w & npm run build:umd:min -- -w",
+    "docs:build": "npm run docs:prepare && gitbook build -g bowheart/react-zedux",
+    "docs:clean": "rimraf _book",
+    "docs:prepare": "gitbook install",
+    "docs:publish": "npm run docs:clean && npm run docs:build && cd _book && git init && git commit --allow-empty -m 'update docs' && git checkout -b gh-pages && git add --all && git commit -m 'update docs' && git push git@github.com:bowheart/react-zedux gh-pages --force",
+    "docs:watch": "npm run docs:prepare && gitbook serve",
     "lint": "eslint src test",
     "prepublishOnly": "npm run build",
     "test": "jest"
@@ -56,10 +61,12 @@
   "license": "MIT",
   "dependencies": {
     "@types/react": "^16.0.34",
+    "gitbook-plugin-anchorjs": "^1.1.1",
+    "gitbook-plugin-prism": "^2.3.0",
     "prop-types": "^15.6.0"
   },
   "peerDependencies": {
-    "react": "^15.3.0 || ^16.0.0",
+    "react": "16.3.0-alpha.0",
     "zedux": "~0.0 || ~0.1"
   },
   "devDependencies": {
@@ -75,10 +82,13 @@
     "enzyme-adapter-react-16": "^1.1.1",
     "eslint": "^4.13.1",
     "eslint-plugin-react": "^7.5.1",
+    "gitbook-cli": "^2.3.2",
     "jest": "^21.2.1",
     "raf": "^3.4.0",
-    "react": "^16.2.0",
-    "react-dom": "^16.2.0",
+    "react": "16.3.0-alpha.0",
+    "react-dom": "16.3.0-alpha.0",
+    "react-test-renderer": "^16.3.0-alpha.0",
+    "redux": "^3.7.2",
     "rollup": "^0.54.1",
     "rollup-plugin-babel": "^3.0.3",
     "rollup-plugin-commonjs": "^8.2.6",
@@ -86,6 +96,7 @@
     "rollup-plugin-replace": "^2.0.0",
     "rollup-plugin-uglify": "^2.0.1",
     "rollup-watch": "^4.3.1",
-    "zedux": "0.0.14"
+    "rxjs": "^5.5.6",
+    "zedux": "0.0.17"
   }
 }
