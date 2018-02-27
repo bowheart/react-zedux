@@ -173,11 +173,11 @@ Context.inject()
 
 You can get by with just `<Context.Provider>` and `<Context.Consumer>`. The rest is just sugar, but it definitely comes in handy.
 
-See the [Context docs](https://bowheart.github.io/react-zedux/types/context/inject).
+See the [Context documentation](https://bowheart.github.io/react-zedux/types/Context).
 
 ### Render props!
 
-`<Context.Consumer>` and `<Context.Injector>` take a single function as their only child. This is the [render prop technique](https://reactjs.org/docs/render-props.html) and works exactly like React's `<Context.Consumer>`. This function will be called every time the context's obervable emits (read: "the store's state updates").
+`<Context.Consumer>` and `<Context.Injector>` take a single function as their only child. This is the [render prop technique](https://reactjs.org/docs/render-props.html). It works exactly like React's `<Context.Consumer>`. This function will be called every time the context's obervable emits (read: "the store's state updates").
 
 Render props are awesome, but they can lead to rightward code drift. You could use another library such as [react-composer](https://github.com/jamesplease/react-composer) to prevent this. But we could just as easily use the Zedux `compose()` utility with the Context's Higher-Order Components:
 
