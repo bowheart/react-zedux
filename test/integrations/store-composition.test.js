@@ -65,7 +65,7 @@ describe('nested stores', () => {
         )}
       </ParentContext.Injector>
     )
-    
+
     expect(parentStore.getState()).toEqual({
       a: 'a'
     })

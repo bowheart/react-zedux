@@ -135,7 +135,7 @@ describe('getProvidedValue()', () => {
 
     expect(store.getState()).toBe('a')
     expect(api.d()).toBe('a')
-    
+
     api.b.c()
 
     expect(store.getState()).toBe('c')
@@ -278,9 +278,28 @@ describe('resolveProps()', () => {
   })
 
 
+  test('returns an object with the aliased props if mapper is a plain object', () => {
+
+    const mapper = {
+      a: 'b',
+      c: 'd'
+    }
+    const store = {
+      a: 1,
+      c: 2
+    }
+
+    expect(resolveProps(mapper, store)).toEqual({
+      b: 1,
+      d: 2
+    })
+
+  })
+
+
   test('throws a TypeError if mapper is invalid', () => {
 
-    [1, {}].forEach(
+    [1, new Map()].forEach(
       thing => expect(
         resolveProps.bind(null, thing, {}, 'method name')
       ).toThrowError(/method name/)
@@ -292,7 +311,7 @@ describe('resolveProps()', () => {
 
 
 describe('wrapStore()', () => {
-  
+
   test('returns an object whose prototype is set to the store and contains a single, enumerable "state" property set to state', () => {
 
     const store = {}

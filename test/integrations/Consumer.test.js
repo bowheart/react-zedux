@@ -7,7 +7,7 @@ import { StoreApi, createContext } from '../../src/index'
 
 
 describe('Consumer', () => {
-  
+
   test('throws an error if the coupled <Provider> does not exist up the hierarchy', () => {
 
     const Context = createContext(createStore())

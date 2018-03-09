@@ -27,7 +27,7 @@ describe('Provider', () => {
     expect(subscription.unsubscribe).toHaveBeenCalledTimes(1)
 
   })
-
+ 
 
   test('calls onMount() prop in componentDidMount', () => {
 

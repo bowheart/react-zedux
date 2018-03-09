@@ -1,6 +1,17 @@
 import { StoreApi } from '../api/StoreApi'
 
 
+export function aliasProps(fieldsToPropsMap, store) {
+  const props = {}
+
+  for (let key in fieldsToPropsMap) {
+    props[fieldsToPropsMap[key]] = store[key]
+  }
+
+  return props
+}
+
+
 export function assertApiIsValid(api) {
   if (isObservable(api.store)) return true
 
@@ -101,10 +112,12 @@ export function resolveProps(mapper, store, method) {
 
   if (typeof mapper === 'function') return mapProps(mapper, store)
 
+  if (isPlainObject(mapper)) return aliasProps(mapper, store)
+
   throw new TypeError(
     `React Zedux Error - Context.${method}() - `
-    + 'invalid mapStoreToProps parameter. mapStoreToProps may be undefined, '
-    + 'a string, an array, or a function that returns an object. '
+    + 'invalid mapStoreToProps parameter. mapStoreToProps may be a string, '
+    + 'an array, a plain object, or a function that returns an object. '
     + `Received ${typeof mapper}.`
   )
 }
