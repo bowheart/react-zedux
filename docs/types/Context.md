@@ -1,6 +1,6 @@
 # Context
 
-The object returned from [`createContext()`](/api/createContext.md). This object is very similar to the Context object returned by React's `createContext()`, but with a little sugar added.
+The object returned from [`createContext()`](/api/createContext.md). This object is very similar to the Context object returned by React's own `createContext()`, but with a little sugar added.
 
 ## Definition
 

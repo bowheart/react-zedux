@@ -27,17 +27,22 @@ import React from 'react'
 import { render } from 'react-dom'
 import { StoreApi, createContext } from 'react-zedux'
 
+// Create a store api. This will create a new Zedux store every
+// time the context's Provider is mounted.
 class CounterApi extends StoreApi {
   store = createStore().hydrate(0)
 
+  // Some bound inducer factories
   static actors = {
     increment: () => state => state + 1,
     decrement: () => state => state - 1
   }
 }
 
+// Create the context...
 const CounterContext = createContext(CounterApi)
 
+// ...provide it...
 function Counter() {
   return (
     <CounterContext.Provider>
@@ -47,6 +52,7 @@ function Counter() {
   )
 }
 
+// ...and consume it!
 const CounterDisplay = CounterContext.consume([ 'state' ])(
   ({ state }) => `Counter value: ${state}`
 )
@@ -62,6 +68,7 @@ const CounterControls = CounterContext.consume(
   )
 )
 
+// (and render stuff for fun)
 render(
   <>
     <Counter />

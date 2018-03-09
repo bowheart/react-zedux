@@ -20,7 +20,7 @@ See the [StoreApiConstructor](/types/StoreApiConstructor.md) and [Observable](/t
 
 ## The gist
 
-To create a component-bound store simply create a class that extends `StoreApi`. This class **must** have a visible `store` property whose value is an [Observable](/types/Observable.md).
+To create a component-bound store simply create a class that extends `StoreApi`. This class **must** have a visible `store` instance property whose value is an [Observable](/types/Observable.md).
 
 The class may also take static `actors` and `selectors` properties. See the [StoreApiConstructor type](/types/StoreApiConstructor.md) for more details.
 

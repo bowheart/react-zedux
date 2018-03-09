@@ -26,8 +26,6 @@ const SomeComponent = Context.consume('store')(
 )
 ```
 
-It's kind of important to get to know this type a little bit.
-
 ## Definition
 
 ```typescript
