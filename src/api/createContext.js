@@ -42,7 +42,7 @@ const DEFAULT = '@@react-zedux/default'
  * An error will be thrown if Consumer is used alone.
  *
  * Use Injector to simultaneously provide and consume the context.
- * 
+ *
  * @export
  * @param {(Observable|function(new:StoreApi))} stateContainer
  * @returns {Context}

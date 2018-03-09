@@ -39,7 +39,7 @@ export class StoreApi {
    * @memberof StoreApi
    */
   _bindControls() {
-    const { dispatch, getState } = this.store
+    const { dispatch, getState } = this.store 
     const { actors, selectors } = this.constructor
 
     flattenStore(this, this.store)
