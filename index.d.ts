@@ -22,7 +22,7 @@ import { Actor, Selector } from 'zedux'
  * @export
  * @class StoreApi
  */
-export class StoreApi<TState> {
+export abstract class StoreApi<TState> {
 
   /**
    * Performs the actor/selector binding and flattening.
@@ -74,10 +74,22 @@ export class StoreApi<TState> {
  */
 export function createContext<
   TState,
-  TContainer extends StateContainer<TState>
+  TContainer extends StateContainer<TState> = StateContainer<TState>
 >(
-  stateContainer: TContainer
-): Context<WrappedStateContainer<TState, TContainer>>
+  stateContainer: TContainer<TState>
+): Context<WrappedStateContainer<TState, typeof stateContainer>>
+
+export function createContext<TState, TStoreApi extends StoreApi>(
+  stateContainer: StoreApiConstructor<TState>
+): Context<
+  WrappedStateContainer<
+    TState,
+    stateContainer.actors
+      & stateContainer.selectors
+      & TStoreApi
+      & TStoreApi.store
+  >
+>
 
 
 export interface ActorsMap {
