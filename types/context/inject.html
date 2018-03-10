@@ -1,0 +1,581 @@
+
+<!DOCTYPE HTML>
+<html lang="" >
+    <head>
+        <meta charset="UTF-8">
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>Context.inject · GitBook</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.3">
+        
+        
+        
+    
+    <link rel="stylesheet" href="../../gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-prism/prism.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-search/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+        <link rel="stylesheet" href="../../styles/website.css">
+        
+    
+
+        
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../../gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="../../gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    <link rel="next" href="../Observable.html" />
+    
+    
+    <link rel="prev" href="Injector.html" />
+    
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        <li class="header">Getting started</li>
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="../../">
+            
+                <a href="../../">
+            
+                    
+                    Introduction
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" data-path="../../gettingStarted/overview.html">
+            
+                <a href="../../gettingStarted/overview.html">
+            
+                    
+                    Overview
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3" data-path="../../gettingStarted/reactContextComparison.html">
+            
+                <a href="../../gettingStarted/reactContextComparison.html">
+            
+                    
+                    React context comparison
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4" data-path="../../gettingStarted/storeCategories.html">
+            
+                <a href="../../gettingStarted/storeCategories.html">
+            
+                    
+                    Store categories
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+    
+        
+        <li class="header">API</li>
+        
+        
+    
+        <li class="chapter " data-level="2.1" data-path="../../api/createContext.html">
+            
+                <a href="../../api/createContext.html">
+            
+                    
+                    createContext
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.2" data-path="../../api/StoreApi.html">
+            
+                <a href="../../api/StoreApi.html">
+            
+                    
+                    StoreApi
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+    
+        
+        <li class="header">Guides</li>
+        
+        
+    
+        <li class="chapter " data-level="3.1" data-path="../../guides/timeTravel.html">
+            
+                <a href="../../guides/timeTravel.html">
+            
+                    
+                    Time Travel
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.2" data-path="../../guides/usingObservables.html">
+            
+                <a href="../../guides/usingObservables.html">
+            
+                    
+                    Using Observables
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.3" data-path="../../guides/usingRedux.html">
+            
+                <a href="../../guides/usingRedux.html">
+            
+                    
+                    Using Redux
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+    
+        
+        <li class="header">Types</li>
+        
+        
+    
+        <li class="chapter " data-level="4.1" data-path="../Context.html">
+            
+                <a href="../Context.html">
+            
+                    
+                    Context
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="4.1.1" data-path="Provider.html">
+            
+                <a href="Provider.html">
+            
+                    
+                    Context.Provider
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="4.1.2" data-path="provide.html">
+            
+                <a href="provide.html">
+            
+                    
+                    Context.provide
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="4.1.3" data-path="Consumer.html">
+            
+                <a href="Consumer.html">
+            
+                    
+                    Context.Consumer
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="4.1.4" data-path="consume.html">
+            
+                <a href="consume.html">
+            
+                    
+                    Context.consume
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="4.1.5" data-path="Injector.html">
+            
+                <a href="Injector.html">
+            
+                    
+                    Context.Injector
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter active" data-level="4.1.6" data-path="inject.html">
+            
+                <a href="inject.html">
+            
+                    
+                    Context.inject
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="4.2" data-path="../Observable.html">
+            
+                <a href="../Observable.html">
+            
+                    
+                    Observable
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="4.3" data-path="../StateContainer.html">
+            
+                <a href="../StateContainer.html">
+            
+                    
+                    StateContainer
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="4.4" data-path="../StoreApiConstructor.html">
+            
+                <a href="../StoreApiConstructor.html">
+            
+                    
+                    StoreApiConstructor
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="4.5" data-path="../WrappedStateContainer.html">
+            
+                <a href="../WrappedStateContainer.html">
+            
+                    
+                    WrappedStateContainer
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            Published with GitBook
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href="../.." >Context.inject</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <h1 id="contextinject"><code>Context.inject()</code></h1>
+<p>An HOC. Curried. Accepts an optional <code>mapStoreToProps</code> parameter. Wraps the given component in the Context&apos;s Injector.</p>
+<p>Unlike <a href="consume.html"><code>Context.consume()</code></a>, will not throw an error if the Context&apos;s <a href="Provider.html">Provider</a> is not an ancestor of the injected component. This is because injected components get their own Providers.</p>
+<h2 id="definition">Definition</h2>
+<pre class="language-"><code class="lang-typescript"><span class="token punctuation">(</span>
+  mapStoreToProps<span class="token operator">?</span><span class="token punctuation">:</span> <span class="token keyword">string</span>
+    <span class="token operator">|</span> <span class="token keyword">string</span><span class="token punctuation">[</span><span class="token punctuation">]</span>
+    <span class="token operator">|</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>store<span class="token punctuation">:</span> WrappedStateContainer<span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">&gt;</span> Object<span class="token punctuation">)</span>
+<span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token punctuation">(</span>component<span class="token punctuation">:</span> ComponentType<span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">&gt;</span> Component
+</code></pre>
+<p>Exactly the same as <a href="consume.html"><code>Context.consume()</code></a>. See that doc page for details on this HOC&apos;s overloads.</p>
+<h2 id="examples">Examples:</h2>
+<p>The following examples are all equivalent:</p>
+<pre class="language-"><code class="lang-js"><span class="token keyword">import</span> <span class="token punctuation">{</span> compose <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">&apos;zedux&apos;</span>
+<span class="token keyword">import</span> HelloContext <span class="token keyword">from</span> <span class="token string">&apos;../contexts/HelloContext&apos;</span>
+<span class="token keyword">import</span> WorldContext form <span class="token string">&apos;../contexts/WorldContext&apos;</span>
+
+<span class="token keyword">const</span> HelloWorld <span class="token operator">=</span> <span class="token function">compose</span><span class="token punctuation">(</span>
+  HelloContext<span class="token punctuation">.</span><span class="token function">inject</span><span class="token punctuation">(</span><span class="token string">&apos;helloStore&apos;</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+  WorldContext<span class="token punctuation">.</span><span class="token function">inject</span><span class="token punctuation">(</span><span class="token string">&apos;worldStore&apos;</span><span class="token punctuation">)</span>
+<span class="token punctuation">)</span><span class="token punctuation">(</span>
+  <span class="token punctuation">(</span><span class="token punctuation">{</span> helloStore<span class="token punctuation">,</span> worldStore <span class="token punctuation">}</span><span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">&gt;</span>
+    <span class="token template-string"><span class="token string">`</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>helloStore<span class="token punctuation">.</span>state<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string"> </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>worldStore<span class="token punctuation">.</span>state<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">`</span></span>
+<span class="token punctuation">)</span>
+</code></pre>
+<p>or without using <code>inject()</code>:</p>
+<pre class="language-"><code class="lang-js"><span class="token keyword">import</span> <span class="token punctuation">{</span> compose <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">&apos;zedux&apos;</span>
+<span class="token keyword">import</span> HelloContext <span class="token keyword">from</span> <span class="token string">&apos;../contexts/HelloContext&apos;</span>
+<span class="token keyword">import</span> WorldContext form <span class="token string">&apos;../contexts/WorldContext&apos;</span>
+
+<span class="token keyword">const</span> HelloWorld <span class="token operator">=</span> <span class="token function">compose</span><span class="token punctuation">(</span>
+  HelloContext<span class="token punctuation">.</span>provide<span class="token punctuation">,</span>
+  HelloContext<span class="token punctuation">.</span><span class="token function">consume</span><span class="token punctuation">(</span><span class="token string">&apos;helloStore&apos;</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+  WorldContext<span class="token punctuation">.</span>provide<span class="token punctuation">,</span>
+  WorldContext<span class="token punctuation">.</span><span class="token function">consume</span><span class="token punctuation">(</span><span class="token string">&apos;worldStore&apos;</span><span class="token punctuation">)</span>
+<span class="token punctuation">)</span><span class="token punctuation">(</span>
+  <span class="token punctuation">(</span><span class="token punctuation">{</span> helloStore<span class="token punctuation">,</span> worldStore <span class="token punctuation">}</span><span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">&gt;</span>
+    <span class="token template-string"><span class="token string">`</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>helloStore<span class="token punctuation">.</span>state<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string"> </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>worldStore<span class="token punctuation">.</span>state<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">`</span></span>
+<span class="token punctuation">)</span>
+</code></pre>
+<p>or without using HOCs:</p>
+<pre class="language-"><code class="lang-js"><span class="token keyword">import</span> HelloContext <span class="token keyword">from</span> <span class="token string">&apos;../contexts/HelloContext&apos;</span>
+<span class="token keyword">import</span> WorldContext form <span class="token string">&apos;../contexts/WorldContext&apos;</span>
+
+<span class="token keyword">const</span> HelloWorld <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token punctuation">(</span>
+  <span class="token operator">&lt;</span>HelloContext<span class="token punctuation">.</span>Injector<span class="token operator">&gt;</span>
+    <span class="token punctuation">{</span>helloStore <span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token punctuation">(</span>
+      <span class="token operator">&lt;</span>WorldContext<span class="token punctuation">.</span>Injector<span class="token operator">&gt;</span>
+        <span class="token punctuation">{</span>worldStore <span class="token operator">=</span><span class="token operator">&gt;</span>
+          <span class="token template-string"><span class="token string">`</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>helloStore<span class="token punctuation">.</span>state<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string"> </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>worldStore<span class="token punctuation">.</span>state<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">`</span></span>
+        <span class="token punctuation">}</span>
+      <span class="token operator">&lt;</span><span class="token operator">/</span>WorldContext<span class="token punctuation">.</span>Injector<span class="token operator">&gt;</span>
+    <span class="token punctuation">)</span><span class="token punctuation">}</span>
+  <span class="token operator">&lt;</span><span class="token operator">/</span>HelloContext<span class="token punctuation">.</span>Injector<span class="token operator">&gt;</span>
+<span class="token punctuation">)</span>
+</code></pre>
+<p>or just being lame:</p>
+<pre class="language-"><code class="lang-js"><span class="token keyword">import</span> HelloContext <span class="token keyword">from</span> <span class="token string">&apos;../contexts/HelloContext&apos;</span>
+<span class="token keyword">import</span> WorldContext form <span class="token string">&apos;../contexts/WorldContext&apos;</span>
+
+<span class="token keyword">const</span> HelloWorld <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token punctuation">(</span>
+  <span class="token operator">&lt;</span>HelloContext<span class="token punctuation">.</span>Provider<span class="token operator">&gt;</span>
+    <span class="token operator">&lt;</span>HelloContext<span class="token punctuation">.</span>Consumer<span class="token operator">&gt;</span>
+      <span class="token punctuation">{</span>helloStore <span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token punctuation">(</span>
+        <span class="token operator">&lt;</span>WorldContext<span class="token punctuation">.</span>Provider<span class="token operator">&gt;</span>
+          <span class="token operator">&lt;</span>WorldContext<span class="token punctuation">.</span>Consumer<span class="token operator">&gt;</span>
+            <span class="token punctuation">{</span>worldStore <span class="token operator">=</span><span class="token operator">&gt;</span>
+              <span class="token template-string"><span class="token string">`</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>helloStore<span class="token punctuation">.</span>state<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string"> </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>worldStore<span class="token punctuation">.</span>state<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">`</span></span>
+            <span class="token punctuation">}</span>
+          <span class="token operator">&lt;</span><span class="token operator">/</span>WorldContext<span class="token punctuation">.</span>Consumer<span class="token operator">&gt;</span>
+        <span class="token operator">&lt;</span><span class="token operator">/</span>WorldContext<span class="token punctuation">.</span>Provider<span class="token operator">&gt;</span>
+      <span class="token punctuation">)</span><span class="token punctuation">}</span>
+    <span class="token operator">&lt;</span><span class="token operator">/</span>HelloContext<span class="token punctuation">.</span>Consumer<span class="token operator">&gt;</span>
+  <span class="token operator">&lt;</span><span class="token operator">/</span>HelloContext<span class="token punctuation">.</span>Provider<span class="token operator">&gt;</span>
+<span class="token punctuation">)</span>
+</code></pre>
+
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="Injector.html" class="navigation navigation-prev " aria-label="Previous page: Context.Injector">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+                <a href="../Observable.html" class="navigation navigation-next " aria-label="Next page: Observable">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"Context.inject","level":"4.1.6","depth":2,"next":{"title":"Observable","level":"4.2","depth":1,"path":"types/Observable.md","ref":"types/Observable.md","articles":[]},"previous":{"title":"Context.Injector","level":"4.1.5","depth":2,"path":"types/context/Injector.md","ref":"types/context/Injector.md","articles":[]},"dir":"ltr"},"config":{"plugins":["-highlight","prism","anchorjs"],"root":"docs","styles":{"website":"./styles/website.css"},"pluginsConfig":{"prism":{},"anchorjs":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"gitbook":"*"},"file":{"path":"types/context/inject.md","mtime":"2018-02-27T04:56:56.730Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-03-10T00:11:42.804Z"},"basePath":"../..","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <script src="../../gitbook/gitbook.js"></script>
+    <script src="../../gitbook/theme.js"></script>
+    
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.0/anchor.min.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-anchorjs/anchor-style.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-search/search-engine.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-search/search.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-sharing/buttons.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+
