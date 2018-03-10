@@ -33,10 +33,18 @@ Context.consume('storePropName')
 // with the same name to the wrapped component.
 Context.consume([ 'dispatch', 'getState' ])
 
+// Aliases store properties as prop names. Useful for preventing
+// name collisions when consuming multiple contexts.
+Context.consume({
+  state: 'todosState', // reads "consume 'state' as 'todosState'"
+  setState: 'setTodosState'
+})
+
 // Manually map props to values from the store. Similar to
-// ReactRedux.connect()
-Context.consume(store => ({
-  todos: store.selectTodos()
+// `connect()` from React Redux.
+Context.consume(storeApi => ({
+  todosState: storeApi.getState(),
+  todos: storeApi.selectTodos()
 }))
 ```
 
@@ -69,7 +77,7 @@ const HelloWorld = () => (
   <HelloContext.Consumer>
     {helloStore => (
       <WorldContext.Consumer>
-        {worldStore => 
+        {worldStore =>
           `${helloStore.state} ${worldStore.state}`
         }
       </WorldContext.Consumer>

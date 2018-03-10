@@ -15,10 +15,10 @@ import { Actor, Selector } from 'zedux'
  *
  * @prop {ActorsMap} [actors] - A hash (can be nested) of actors
  *   to bind to the store and attach to the StoreApi instance.
- * 
+ *
  * @prop {SelectorsMap} [selectors] - A hash (can be nested) of selectors
  *   to bind to the store and attach to the StoreApi instance.
- * 
+ *
  * @export
  * @class StoreApi
  */
@@ -31,7 +31,7 @@ export abstract class StoreApi<TState> {
    *
    * Will throw an error if the StoreApi instance does not have a visible
    * `store` property.
-   * 
+   *
    * @returns {StoreApi} for chaining
    * @memberof StoreApi
    */
@@ -41,53 +41,53 @@ export abstract class StoreApi<TState> {
 
 /**
  * Creates a consumable context out of a state container.
- * 
+ *
  * The state container can be either:
  *   1. An observable (e.g. a Zedux store)
  *   2. A class that extends ReactZedux.StoreApi
- * 
+ *
  * Since `new [class that extends StoreApi]()` must return an object that
  * has an observable `store` property, option 2 is really just an
  * extension of option 1. But since it will be instantiated once for
  * every <Provider>, it allows for dynamic observable creation.
- * 
+ *
  * Returns an object containing 3 First-Order Components:
- * 
+ *
  * <Provider>, <Consumer>, and <Injector>
- * 
+ *
  * and their corresponding Higher-Order Components:
- * 
+ *
  * provide(), consume(), inject()
- * 
+ *
  * Provider and Consumer must be used together.
  * An error will be thrown if Consumer is used alone.
  *
  * Use Injector to simultaneously provide and consume the context.
- * 
+ *
  * @export
  * @template TState The state type emitted by the observable
  * @template TContainer The state container type
  * @param {TContainer} stateContainer The state container.
  *   Can be either an observable or a class that extends ReactZedux.StoreApi
- * 
+ *
  * @returns {Context<WrappedStateContainer<TState, TContainer>>}
  */
 export function createContext<
   TState,
   TContainer extends StateContainer<TState> = StateContainer<TState>
 >(
-  stateContainer: TContainer<TState>
+  stateContainer: TContainer
 ): Context<WrappedStateContainer<TState, typeof stateContainer>>
 
-export function createContext<TState, TStoreApi extends StoreApi>(
+export function createContext<TState, TStoreApi extends StoreApi<TState>>(
   stateContainer: StoreApiConstructor<TState>
 ): Context<
   WrappedStateContainer<
     TState,
-    stateContainer.actors
-      & stateContainer.selectors
+    StoreApiConstructor<TState>['actors']
+      & StoreApiConstructor<TState>['selectors']
       & TStoreApi
-      & TStoreApi.store
+      & TStoreApi['store']
   >
 >
 
@@ -130,31 +130,45 @@ export interface Context<TWrappedContainer> {
   consume<TConsumerProps extends TWrappedContainer>():
     ConsumerComponentEnhancer<TWrappedContainer, TConsumerProps>
 
+  // A single string
   consume<
-    TConsumerProps extends {[s in TStorePropName]: TWrappedContainer },
-    TStorePropName extends string
+    TConsumerProps extends { [key in TStorePropName]: any },
+    TStorePropName extends string = ''
   >(
-    mapStoreToProps?: TStorePropName
+    mapStoreToProps: TStorePropName
   ): ConsumerComponentEnhancer<
-    { [s in TStorePropName]: TWrappedContainer },
+    { [key in TStorePropName]: TWrappedContainer },
     TConsumerProps
   >
 
+  // An array of values to pluck
   consume<
-    TConsumerProps extends TListOfPropsToPluck,
-    TListOfPropsToPluck extends string[]
+    TConsumerProps extends {},
+    TListOfPropsToPluck extends keyof TConsumerProps
   >(
-    mapStoreToProps?: TListOfPropsToPluck
+    mapStoreToProps: TListOfPropsToPluck[]
   ): ConsumerComponentEnhancer<
-    TListOfPropsToPluck,
+    Partial<TConsumerProps>,
     TConsumerProps
   >
 
+  // A storeFields-to-props map
+  consume<
+    TConsumerProps extends { [key in TAliasedProps]: any },
+    TAliasedProps extends string
+  >(
+    mapStoreToProps: { [key in keyof TWrappedContainer]?: TAliasedProps }
+  ): ConsumerComponentEnhancer<
+    Partial<TConsumerProps>,
+    TConsumerProps
+  >
+
+  // A custom storeFields-to-props mapper function
   consume<
     TConsumerProps extends TMappedProps,
     TMappedProps extends Object
   >(
-    mapStoreToProps?: (store: TWrappedContainer) => TMappedProps
+    mapStoreToProps: (store: TWrappedContainer) => TMappedProps
   ): ConsumerComponentEnhancer<
     TMappedProps,
     TConsumerProps
@@ -165,31 +179,45 @@ export interface Context<TWrappedContainer> {
   inject<TConsumerProps extends TWrappedContainer>():
     ConsumerComponentEnhancer<TWrappedContainer, TConsumerProps>
 
+  // A single string
   inject<
-    TConsumerProps extends {[s in TStorePropName]: TWrappedContainer },
-    TStorePropName extends string
+    TConsumerProps extends {[key in TStorePropName]: any },
+    TStorePropName extends string = ''
   >(
-    mapStoreToProps?: TStorePropName
+    mapStoreToProps: TStorePropName
   ): ConsumerComponentEnhancer<
-    {[s in TStorePropName]: TWrappedContainer },
+    {[key in TStorePropName]: TWrappedContainer },
     TConsumerProps
   >
 
+  // An array of values to pluck
   inject<
-    TConsumerProps extends TListOfPropsToPluck,
-    TListOfPropsToPluck extends string[]
+    TConsumerProps extends {},
+    TListOfPropsToPluck extends keyof TConsumerProps
   >(
-    mapStoreToProps?: TListOfPropsToPluck
+    mapStoreToProps: TListOfPropsToPluck[]
   ): ConsumerComponentEnhancer<
-    TListOfPropsToPluck,
+    Partial<TConsumerProps>,
     TConsumerProps
   >
 
+  // A storeFields-to-props map
+  inject<
+    TConsumerProps extends {[key in TAliasedProps]: any },
+    TAliasedProps extends string
+  >(
+    mapStoreToProps: {[key in keyof TWrappedContainer]?: TAliasedProps }
+  ): ConsumerComponentEnhancer<
+    Partial<TConsumerProps>,
+    TConsumerProps
+  >
+
+  // A custom storeFields-to-props mapper function
   inject<
     TConsumerProps extends TMappedProps,
     TMappedProps extends Object
   >(
-    mapStoreToProps?: (store: TWrappedContainer) => TMappedProps
+    mapStoreToProps: (store: TWrappedContainer) => TMappedProps
   ): ConsumerComponentEnhancer<
     TMappedProps,
     TConsumerProps
