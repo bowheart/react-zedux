@@ -61,8 +61,6 @@
   "license": "MIT",
   "dependencies": {
     "@types/react": "^16.0.34",
-    "gitbook-plugin-anchorjs": "^1.1.1",
-    "gitbook-plugin-prism": "^2.3.0",
     "prop-types": "^15.6.0"
   },
   "peerDependencies": {

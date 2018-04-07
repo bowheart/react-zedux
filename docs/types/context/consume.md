@@ -23,7 +23,7 @@ The different overloads:
 ```js
 // Passes each property of the store as a prop on the wrapped
 // component. Not ideal, as this clobbers the prop namespace.
-// Also definitely can't be composed with other consume() :(
+// Also definitely can't be composed with other consume() HOCs :(
 Context.consume()
 
 // Passes the store as a single prop of the wrapped component.
