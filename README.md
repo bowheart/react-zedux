@@ -1,3 +1,7 @@
+# [DEPRECATED]
+
+This repo has moved to [`Omnistac/zedux`](https://github.com/omnistac/zedux) - specifically the [`react` package](https://github.com/omnistac/zedux/tree/master/packages/react).
+
 # React Zedux
 
 [![Build Status](https://travis-ci.org/bowheart/react-zedux.svg?branch=master)](https://travis-ci.org/bowheart/react-zedux)
@@ -71,8 +75,7 @@ import { createStore } from 'zedux'
   Here we're using a global Zedux store. But we could use
   any observable (e.g. from RxJS or a Redux store).
 */
-const store = createStore()
-  .hydrate('world')
+const store = createStore().hydrate('world')
 
 /*
   Meet the Context. This guy makes our dreams come true.
@@ -87,9 +90,7 @@ const Context = createContext(store)
 */
 const HelloWorld = () => (
   <Context.Provider>
-    <Context.Consumer>
-      {store => 'hello ' + store.getState()}
-    </Context.Consumer>
+    <Context.Consumer>{store => 'hello ' + store.getState()}</Context.Consumer>
   </Context.Provider>
 )
 ```
@@ -98,9 +99,7 @@ React Zedux actually has a shorthand for this "provide and consume" scenario:
 
 ```js
 const HelloWorld = () => (
-  <Context.Injector>
-    {store => 'hello ' + store.getState()}
-  </Context.Injector>
+  <Context.Injector>{store => 'hello ' + store.getState()}</Context.Injector>
 )
 ```
 
@@ -120,7 +119,6 @@ import Context from './contexts/Context'
 const App = () => (
   <Context.Injector>
     {store =>
-
       // This function-as-child is a render prop.
       // A wrapped form of the Context's observable is
       // passed to this function.
@@ -139,9 +137,7 @@ import Context from './contexts/Context'
 // The render prop is now gone. In its place, we're telling React
 // Zedux to pass the store to the wrapped component as a normal
 // prop called "store"
-const App = Context.inject('store')(
-  ({ store }) => store.getState()
-)
+const App = Context.inject('store')(({ store }) => store.getState())
 ```
 
 See the [inject HOC documentation](https://bowheart.github.io/react-zedux/types/context/inject) for more info on this guy. Also see the [consume HOC](https://bowheart.github.io/react-zedux/types/context/inject) for all possible overloads of `Context.inject()`.
@@ -185,12 +181,8 @@ Render props are awesome, but they can lead to rightward code drift. You could u
 import { createContext } from 'react-zedux'
 import { compose, createStore } from 'zedux'
 
-const HelloContext = createContext(
-  createStore().hydrate('hello')
-)
-const WorldContext = createContext(
-  createStore().hydrate('world')
-)
+const HelloContext = createContext(createStore().hydrate('hello'))
+const WorldContext = createContext(createStore().hydrate('world'))
 
 const HelloWorld = compose(
   HelloContext.inject('helloStore'),
@@ -210,9 +202,7 @@ const HelloWorld = () => (
       {helloStore => (
         <WorldContext.Provider>
           <WorldContext.Consumer>
-            {worldStore =>
-              `${helloStore.getState()} ${worldStore.getState()}`
-            }
+            {worldStore => `${helloStore.getState()} ${worldStore.getState()}`}
           </WorldContext.Consumer>
         </WorldContext.Provider>
       )}
